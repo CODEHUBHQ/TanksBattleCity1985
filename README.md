@@ -1,4 +1,4 @@
-Battle City Online contains 35 different levels
+Tanks: Battle City 1985 contains 35 different levels
 
 Each map contains different types of terrain and obstacles
 

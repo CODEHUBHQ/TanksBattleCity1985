@@ -1,0 +1,11 @@
+# ninja log v5
+61	306	7383416833625493	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	af7c95758cdae95c
+308	554	7383416836265845	C:/Users/musta/Desktop/mywork/unity/TanksBattleCity1985/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/39357255/obj/armeabi-v7a/libswappywrapper.so	fff33da13fd75d7b
+31	1311	7383416843751270	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	4620cc31b4216eeb
+17	1363	7383416844238215	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	bdf30ad1a4d171fc
+40	1402	7383416844674587	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	5f6cbbcff85e02fe
+50	1528	7383416845931795	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	7f6272698712028d
+1	1605	7383416846714380	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	df268bb46738432e
+24	2066	7383416850933134	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	daa04b98d6a773cd
+10	2244	7383416853049928	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	3baabbe5968f2326
+2244	2360	7383416854353986	C:/Users/musta/Desktop/mywork/unity/TanksBattleCity1985/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/39357255/obj/armeabi-v7a/libgame.so	ff9610638da6c6ae

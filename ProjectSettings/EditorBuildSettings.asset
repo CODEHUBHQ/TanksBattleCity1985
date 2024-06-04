@@ -6,23 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/BattleCityOnlineMobile/Scenes/MenuScene.unity
+    path: Assets/TanksBattleCity1985/Scenes/MenuScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
-    path: Assets/BattleCityOnlineMobile/Scenes/LobbyScene.unity
-    guid: 451c7b7c35997b04aab94d17cc1b431e
   - enabled: 1
-    path: Assets/BattleCityOnlineMobile/Scenes/GameScene.unity
-    guid: 155202dea62f6784094f6973ccb8f1e0
-  - enabled: 1
-    path: Assets/BattleCityOnlineMobile/Scenes/LoadingScene.unity
+    path: Assets/TanksBattleCity1985/Scenes/LoadingScene.unity
     guid: 16decfe9c28c1d649ba19925a2c2b563
   - enabled: 1
-    path: Assets/BattleCityOnlineMobile/Scenes/MapEditorScene.unity
-    guid: da90fa91aa45c1b478d639fd3b469c0a
+    path: Assets/TanksBattleCity1985/Scenes/GameScene.unity
+    guid: 155202dea62f6784094f6973ccb8f1e0
   - enabled: 1
-    path: Assets/BattleCityOnlineMobile/Scenes/SettingsScene.unity
+    path: Assets/TanksBattleCity1985/Scenes/SettingsScene.unity
     guid: 36dfb1f317cde564796d67070f26adcd
+  - enabled: 1
+    path: Assets/TanksBattleCity1985/Scenes/MapEditorScene.unity
+    guid: da90fa91aa45c1b478d639fd3b469c0a
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: 36cdef27edf8ba747b203f3e8501431c, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

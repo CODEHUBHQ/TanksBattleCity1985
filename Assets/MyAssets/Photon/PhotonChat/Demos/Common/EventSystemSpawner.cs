@@ -27,7 +27,7 @@ namespace Photon.Chat.UtilityScripts
             return;
             #endif
 
-            EventSystem sceneEventSystem = FindFirstObjectByType<EventSystem>();
+            EventSystem sceneEventSystem = FindObjectOfType<EventSystem>();
             if (sceneEventSystem == null)
             {
                 GameObject eventSystem = new GameObject("EventSystem");
