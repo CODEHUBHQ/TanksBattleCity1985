@@ -28,6 +28,7 @@ public class InterstitialAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnit
         // Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing Ad: " + adUnitId);
         Advertisement.Show(adUnitId, this);
+        Time.timeScale = 0f;
     }
 
     // Implement Load Listener and Show Listener interface methods: 
@@ -51,10 +52,14 @@ public class InterstitialAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnit
     public void OnUnityAdsShowStart(string adUnitId)
     {
     }
+    
     public void OnUnityAdsShowClick(string adUnitId)
     {
     }
+
     public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
+        Debug.Log("Ad complete: " + adUnitId);
+        Time.timeScale = 1f;
     }
 }
