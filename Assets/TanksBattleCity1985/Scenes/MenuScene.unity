@@ -2412,7 +2412,7 @@ MonoBehaviour:
   interstitialAdsMapEditorButton: {fileID: 1124473553}
   androidGameId: 5631883
   iOSGameId: 5631882
-  testMode: 1
+  testMode: 0
 --- !u!4 &930109035
 Transform:
   m_ObjectHideFlags: 0
