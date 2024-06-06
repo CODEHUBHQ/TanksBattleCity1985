@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class ButtonLongPress : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class ButtonLongPress : MonoBehaviour, IPointerUpHandler, IPointerMoveHandler
 {
     public UnityEvent OnLongPressDown = new UnityEvent();
     public UnityEvent OnLongPressUp = new UnityEvent();
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerMove(PointerEventData eventData)
     {
         OnLongPressDown?.Invoke();
     }
