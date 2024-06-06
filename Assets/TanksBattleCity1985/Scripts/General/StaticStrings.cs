@@ -15,6 +15,7 @@ public static class StaticStrings
     public const string GAME_SETTINGS_SOUND_VOLUME = "GameSoundVolume";
     public const string GAME_SETTINGS_VIBRATE = "GameVibrate";
     public const string GAME_SETTINGS_DIFFICULTY = "GameDifficulty";
+    public const string GAME_SETTINGS_BUTTON_CONTROLLER = "GameButtonController";
 
     // photon
     public const string IS_PLAYER_READY = "IsPlayerReady";

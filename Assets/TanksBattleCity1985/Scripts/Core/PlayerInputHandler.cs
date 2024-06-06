@@ -12,6 +12,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     public event EventHandler OnShootAction;
 
+    [SerializeField] private Joystick joystick;
+    [SerializeField] private GameObject movementButtons;
+
     private Vector2 inputVector;
 
     private int playerInputIndex;
@@ -19,6 +22,30 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        var gameButtonController = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "true"));
+
+        if (gameButtonController)
+        {
+            joystick.gameObject.SetActive(true);
+            movementButtons.SetActive(false);
+        }
+        else
+        {
+            joystick.gameObject.SetActive(false);
+            movementButtons.SetActive(true);
+        }
+    }
+
+    private void Update()
+    {
+        if (joystick.gameObject.activeSelf)
+        {
+            inputVector = joystick.Direction;
+        }
     }
 
     public void Shoot()

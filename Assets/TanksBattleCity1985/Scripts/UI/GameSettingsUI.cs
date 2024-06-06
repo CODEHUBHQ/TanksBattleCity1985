@@ -12,6 +12,8 @@ public class GameSettingsUI : MonoBehaviour
 
     [SerializeField] private List<Button> gameSettingsOrderedButtons;
     [SerializeField] private TMP_Text gameSoundVolumeText;
+    [SerializeField] private Image buttonMovement;
+    [SerializeField] private Image buttonJoystick;
 
     private List<string> gameSettingsOrderedButtonsMethodNames = new List<string>();
 
@@ -20,6 +22,7 @@ public class GameSettingsUI : MonoBehaviour
     private bool gameSound;
     private bool gameSoundMove;
     private bool gameVibrate;
+    private bool gameButtonController;
 
     private void Awake()
     {
@@ -51,11 +54,13 @@ public class GameSettingsUI : MonoBehaviour
         gameSoundMove = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_SOUND_MOVE, "true"));
         gameSoundVolume = float.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_SOUND_VOLUME, "5"));
         gameVibrate = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_VIBRATE, "true"));
+        gameButtonController = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "true"));
 
         PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_SOUND, $"{gameSound}");
         PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_SOUND_MOVE, $"{gameSoundMove}");
         PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_SOUND_VOLUME, $"{gameSoundVolume}");
         PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_VIBRATE, $"{gameVibrate}");
+        PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, $"{gameButtonController}");
         PlayerPrefs.Save();
 
         UpdateGameSettingsUI();
@@ -101,6 +106,19 @@ public class GameSettingsUI : MonoBehaviour
         }
 
         gameSoundVolumeText.text = $"{gameSoundVolume}";
+
+        Debug.Log($"UpdateGameSettingsUI gameButtonController {gameButtonController}");
+
+        if (gameButtonController)
+        {
+            buttonMovement.color = new Color(255f, 255f, 255f, 0.1f);
+            buttonJoystick.color = new Color(255f, 255f, 255f, 1f);
+        }
+        else
+        {
+            buttonMovement.color = new Color(255f, 255f, 255f, 1f);
+            buttonJoystick.color = new Color(255f, 255f, 255f, 0.1f);
+        }
     }
 
     private void SoundButtonOnClick()
@@ -168,5 +186,17 @@ public class GameSettingsUI : MonoBehaviour
         Debug.Log($"MainMenuButtonOnClick");
 
         LoadingManager.LoadScene(LoadingManager.Scene.MenuScene);
+    }
+
+    public void OnControllerButtonClicked(bool isJoystick)
+    {
+        Debug.Log($"OnControllerButtonClicked");
+
+        gameButtonController = isJoystick;
+
+        PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, $"{gameButtonController}");
+        PlayerPrefs.Save();
+
+        UpdateGameSettingsUI();
     }
 }
