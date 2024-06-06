@@ -11,7 +11,6 @@ public class PlayerInputHandler : MonoBehaviour
     public static PlayerInputHandler Instance { get; private set; }
 
     public event EventHandler OnShootAction;
-    public event EventHandler OnPauseAction;
 
     private Vector2 inputVector;
 
