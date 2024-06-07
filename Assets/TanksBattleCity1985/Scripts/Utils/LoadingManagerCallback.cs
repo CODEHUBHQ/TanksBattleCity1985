@@ -17,7 +17,7 @@ public class LoadingManagerCallback : MonoBehaviour
 
         if (LoadingManager.targetScene == LoadingManager.Scene.MenuScene)
         {
-            levelText.text = $"Battle City Online";
+            levelText.text = $"Tanks: 1985";
         }
         else if (LoadingManager.targetScene == LoadingManager.Scene.LobbyScene)
         {
