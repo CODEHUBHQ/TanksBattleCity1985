@@ -15,6 +15,7 @@ public class MenuUIManager : MonoBehaviour
 
     [SerializeField] private TMP_Text playerHighScoreText;
     [SerializeField] private ComingSoonUI comingSoonUI;
+    [SerializeField] private Transform levelsPanel;
 
     [Tooltip("The buttons of main menu, should be ordered from top to bottom")]
     [SerializeField] private List<Button> mainMenuOrderedButtons;
@@ -59,10 +60,16 @@ public class MenuUIManager : MonoBehaviour
 
         PlayerPrefs.SetString(StaticStrings.CUSTOM_MAP, "");
         PlayerPrefs.SetString(StaticStrings.IS_CUSTOM_MAP, "false");
-        PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
+        //PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
         PlayerPrefs.Save();
 
-        LoadingManager.LoadScene(LoadingManager.Scene.GameScene);
+        //LoadingManager.LoadScene(LoadingManager.Scene.GameScene);
+        InterstitialAds.Instance.LoadAd(() =>
+        {
+            InterstitialAds.Instance.ShowAd();
+        });
+
+        levelsPanel.gameObject.SetActive(true);
     }
 
     private void PlayerTwoButtonOnClick()
@@ -102,6 +109,11 @@ public class MenuUIManager : MonoBehaviour
     private void MapEditorButtonOnClick()
     {
         Debug.Log("MapEditorButtonOnClick");
+
+        InterstitialAds.Instance.LoadAd(() =>
+        {
+            InterstitialAds.Instance.ShowAd();
+        });
 
         LoadingManager.LoadScene(LoadingManager.Scene.MapEditorScene);
     }

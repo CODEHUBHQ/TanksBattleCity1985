@@ -89,4 +89,17 @@ public static class BattleCityUtils
 
         return newTex;
     }
+
+    public static void SaveSpriteToPng(Sprite sprite, string filename)
+    {
+        if (string.IsNullOrEmpty(filename) || sprite == null) return;
+
+        var bytes = sprite.texture.EncodeToPNG();
+        var file = File.Open($"{Application.streamingAssetsPath}/MapsImgs/{filename}", FileMode.Create);
+        var binary = new BinaryWriter(file);
+
+        binary.Write(bytes);
+
+        file.Close();
+    }
 }

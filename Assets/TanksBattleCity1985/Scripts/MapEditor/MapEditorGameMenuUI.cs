@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System;
 
 public class MapEditorGameMenuUI : MonoBehaviour
 {
@@ -16,7 +18,18 @@ public class MapEditorGameMenuUI : MonoBehaviour
     [Tooltip("The buttons of main menu, should be ordered from top to bottom")]
     [SerializeField] private List<Button> mainMenuOrderedButtons;
 
+    [Header("CreateNewMap")]
+    [SerializeField] private Transform newMapPanel;
+    [SerializeField] private Transform notEnoughBalancePanel;
+    [SerializeField] private TMP_Text balanceText;
+    [SerializeField] private TMP_Text newMapCostText;
+    [SerializeField] private Button newMapYesButton;
+
     private List<string> mainMenuOrderedButtonsMethodNames = new List<string>();
+
+    private int newMapCost = 100;
+
+    private bool runOnce;
 
     private void Awake()
     {
@@ -58,9 +71,43 @@ public class MapEditorGameMenuUI : MonoBehaviour
 
     private void NewMapButtonOnClick()
     {
-        gameMenuContainer.SetActive(false);
-        MapEditorHandler.Instance.SetIsPaused(false);
-        MapEditorHandler.Instance.NewMap();
+        if (!runOnce)
+        {
+            mainMenuOrderedButtons[0].interactable = true;
+            mainMenuOrderedButtons[0].transform.Find("ResumeText").GetComponent<TMP_Text>().color = new Color(255f, 255f, 255f, 1f);
+
+            runOnce = true;
+        }
+
+        var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
+
+        if (int.Parse(playerBalance) >= newMapCost)
+        {
+            newMapPanel.gameObject.SetActive(true);
+
+            balanceText.text = $"Your Balance: {playerBalance} <sprite index=0>";
+            newMapCostText.text = $"New Map Cost: {newMapCost}";
+
+            newMapYesButton.onClick.AddListener(() =>
+            {
+                newMapPanel.gameObject.SetActive(false);
+                gameMenuContainer.SetActive(false);
+
+                var newPlayerBalance = int.Parse(playerBalance) - newMapCost;
+
+                PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
+                PlayerPrefs.Save();
+
+                CoinsManager.Instance.UpdateCoinsText();
+
+                MapEditorHandler.Instance.SetIsPaused(false);
+                MapEditorHandler.Instance.NewMap();
+            });
+        }
+        else
+        {
+            notEnoughBalancePanel.gameObject.SetActive(true);
+        }
     }
 
     private void SaveMapButtonOnClick()

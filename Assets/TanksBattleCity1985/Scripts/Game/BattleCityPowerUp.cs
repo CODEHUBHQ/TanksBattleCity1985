@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BattleCityPowerUp : MonoBehaviour
 {
+    public static BattleCityPowerUp Instance { get; private set; }
+
     private Animator animator;
 
     private System.Random random;
@@ -13,6 +15,8 @@ public class BattleCityPowerUp : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         animator = GetComponent<Animator>();
 
         random = new System.Random();

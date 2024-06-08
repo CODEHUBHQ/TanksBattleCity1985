@@ -7,6 +7,7 @@ public static class StaticStrings
     // PlayerPrefs
     public const string PLAYER_NAME_PREF_KEY = "PlayerName";
     public const string PLAYER_HIGH_SCORE_PREF_KEY = "PlayerHighScore";
+    public const string PLAYER_BALANCE = "PlayerBalance";
     public const string CURRENT_LEVEL = "CurrentLevel";
     public const string IS_CUSTOM_MAP = "IsCustomMap";
     public const string CUSTOM_MAP = "CustomMap";

@@ -55,6 +55,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         ToggleGameIsPaused();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            BattleCityPowerUp.Instance.ShowPowerUp(4);
+        }
+    }
+
     public override void OnEnable()
     {
         base.OnEnable();
@@ -167,8 +175,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (!isCustomMap)
         {
-            PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
-            PlayerPrefs.Save();
+            //PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
+            //PlayerPrefs.Save();
 
             currentLevel = PlayerPrefs.GetString(StaticStrings.CURRENT_LEVEL, "1");
         }

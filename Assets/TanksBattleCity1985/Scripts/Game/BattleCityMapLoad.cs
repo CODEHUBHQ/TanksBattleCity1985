@@ -63,6 +63,19 @@ public class BattleCityMapLoad : MonoBehaviour
 
             LevelStatsUI.Instance.ShowPlayersStats(nextLevel - 1, () =>
             {
+                Time.timeScale = 0f;
+
+                InterstitialAds.Instance.LoadAd(() =>
+                {
+                    InterstitialAds.Instance.ShowAd();
+                });
+
+                var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
+                var newPlayerBalance = int.Parse(playerBalance) + 1;
+
+                PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
+                PlayerPrefs.Save();
+
                 var isCustomMap = bool.Parse(PlayerPrefs.GetString(StaticStrings.IS_CUSTOM_MAP, "false"));
 
                 if (isCustomMap)
