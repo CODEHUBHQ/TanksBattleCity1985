@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     public float Horizontal { get { return (snapX) ? SnapFloat(input.x, AxisOptions.Horizontal) : input.x; } }
     public float Vertical { get { return (snapY) ? SnapFloat(input.y, AxisOptions.Vertical) : input.y; } }
+    
     public Vector2 Direction { get { return new Vector2(Horizontal, Vertical); } }
 
     public float HandleRange
@@ -30,6 +31,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [SerializeField] private AxisOptions axisOptions = AxisOptions.Both;
     [SerializeField] private bool snapX = false;
     [SerializeField] private bool snapY = false;
+    [SerializeField] private bool isDpad;
 
     [SerializeField] protected RectTransform background = null;
     [SerializeField] private RectTransform handle = null;
@@ -39,6 +41,9 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     private Camera cam;
 
     private Vector2 input = Vector2.zero;
+
+    private float x;
+    private float y;
 
     protected virtual void Start()
     {
@@ -71,9 +76,14 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         Vector2 position = RectTransformUtility.WorldToScreenPoint(cam, background.position);
         Vector2 radius = background.sizeDelta / 2;
         input = (eventData.position - position) / (radius * canvas.scaleFactor);
-        FormatInput();
+        FormatInput(eventData);
         HandleInput(input.magnitude, input.normalized, radius, cam);
         handle.anchoredPosition = input * radius * handleRange;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        input = Vector2.zero;
     }
 
     protected virtual void HandleInput(float magnitude, Vector2 normalised, Vector2 radius, Camera cam)
@@ -87,12 +97,34 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
             input = Vector2.zero;
     }
 
-    private void FormatInput()
+    private void FormatInput(PointerEventData eventData)
     {
-        if (axisOptions == AxisOptions.Horizontal)
-            input = new Vector2(input.x, 0f);
-        else if (axisOptions == AxisOptions.Vertical)
-            input = new Vector2(0f, input.y);
+        if (isDpad)
+        {
+            if (input.magnitude > deadZone)
+            {
+                if (Direction.x != x)
+                {
+                    x = Direction.x;
+                    y = 0;
+                }
+
+                if (Direction.y != y)
+                {
+                    y = Direction.y;
+                    x = 0;
+                }
+
+                input = new Vector2(x, y);
+            }
+        }
+        else
+        {
+            if (axisOptions == AxisOptions.Horizontal)
+                input = new Vector2(input.x, 0f);
+            else if (axisOptions == AxisOptions.Vertical)
+                input = new Vector2(0f, input.y);
+        }
     }
 
     private float SnapFloat(float value, AxisOptions snapAxis)

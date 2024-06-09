@@ -12,7 +12,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public event EventHandler OnShootAction;
 
-    [SerializeField] private Joystick joystick;
+    [SerializeField] private Joystick joystickStick;
+    [SerializeField] private Joystick joystickDpad;
     [SerializeField] private GameObject movementButtons;
 
     private Vector2 inputVector;
@@ -30,21 +31,26 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (gameButtonController)
         {
-            joystick.gameObject.SetActive(true);
-            movementButtons.SetActive(false);
+            joystickStick.gameObject.SetActive(true);
+            joystickDpad.gameObject.SetActive(false);
         }
         else
         {
-            joystick.gameObject.SetActive(false);
-            movementButtons.SetActive(true);
+            joystickStick.gameObject.SetActive(false);
+            joystickDpad.gameObject.SetActive(true);
         }
     }
 
     private void Update()
     {
-        if (joystick.gameObject.activeSelf)
+        if (joystickStick.gameObject.activeSelf)
         {
-            inputVector = joystick.Direction;
+            inputVector = joystickStick.Direction;
+        }
+
+        if (joystickDpad.gameObject.activeSelf)
+        {
+            inputVector = joystickDpad.Direction;
         }
     }
 
