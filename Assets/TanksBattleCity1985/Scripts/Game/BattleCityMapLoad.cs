@@ -77,6 +77,8 @@ public class BattleCityMapLoad : MonoBehaviour
                 PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, $"{nextLevel}");
                 PlayerPrefs.Save();
 
+                CoinsManager.Instance.UpdateCoinsText();
+
                 var isCustomMap = bool.Parse(PlayerPrefs.GetString(StaticStrings.IS_CUSTOM_MAP, "false"));
 
                 if (isCustomMap)
