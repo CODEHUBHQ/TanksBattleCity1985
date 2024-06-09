@@ -77,14 +77,7 @@ public class RewardedAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
         {
             Debug.Log("Unity Ads Rewarded Ad Completed");
             // Grant a reward.
-            var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
-            var newPlayerBalance = int.Parse(playerBalance) + 1;
-
-            PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
-            PlayerPrefs.Save();
-
-            CoinsManager.Instance.UpdateCoinsText();
-
+            
             if (onAddComplete != null)
             {
                 var tmpAction = onAddComplete;

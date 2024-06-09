@@ -16,91 +16,109 @@ public class PowerUpsPanel : MonoBehaviour
     {
         levelPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
-
-                    BattleCityPowerUp.Instance.ShowPowerUp(1);
-                });
-            });
+                ShowPowerUpCoins(1);
+            }
+            else
+            {
+                ShowPowerUpAd(1);
+            }
         });
 
         destroyPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
-
-                    BattleCityPowerUp.Instance.ShowPowerUp(2);
-                });
-            });
+                ShowPowerUpCoins(2);
+            }
+            else
+            {
+                ShowPowerUpAd(2);
+            }
         });
 
         timerPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
-
-                    BattleCityPowerUp.Instance.ShowPowerUp(3);
-                });
-            });
+                ShowPowerUpCoins(3);
+            }
+            else
+            {
+                ShowPowerUpAd(3);
+            }
         });
 
         shieldPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
-
-                    BattleCityPowerUp.Instance.ShowPowerUp(4);
-                });
-            });
+                ShowPowerUpCoins(4);
+            }
+            else
+            {
+                ShowPowerUpAd(4);
+            }
         });
 
         healthPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
-
-                    BattleCityPowerUp.Instance.ShowPowerUp(5);
-                });
-            });
+                ShowPowerUpCoins(5);
+            }
+            else
+            {
+                ShowPowerUpAd(5);
+            }
         });
 
         shovelPowerUpButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ToggleGameIsPaused();
-
-            RewardedAds.Instance.LoadAd(() =>
+            if (HasBalance())
             {
-                RewardedAds.Instance.ShowAd(() =>
-                {
-                    GameManager.Instance.ToggleGameIsPaused();
+                ShowPowerUpCoins(6);
+            }
+            else
+            {
+                ShowPowerUpAd(6);
+            }
+        });
+    }
 
-                    BattleCityPowerUp.Instance.ShowPowerUp(6);
-                });
+    private bool HasBalance()
+    {
+        var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
+
+        return int.Parse(playerBalance) >= CoinsManager.Instance.GetAdCoinsReward();
+    }
+
+    private void ShowPowerUpCoins(int powerUp)
+    {
+        var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
+
+        var newPlayerBalance = int.Parse(playerBalance) - CoinsManager.Instance.GetAdCoinsReward();
+
+        PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
+        PlayerPrefs.Save();
+
+        CoinsManager.Instance.UpdateCoinsText();
+
+        BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
+    }
+
+    private void ShowPowerUpAd(int powerUp)
+    {
+        GameManager.Instance.ToggleGameIsPaused();
+
+        RewardedAds.Instance.LoadAd(() =>
+        {
+            RewardedAds.Instance.ShowAd(() =>
+            {
+                GameManager.Instance.ToggleGameIsPaused();
+
+                BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
             });
         });
     }

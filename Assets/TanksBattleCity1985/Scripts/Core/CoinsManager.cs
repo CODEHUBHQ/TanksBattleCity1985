@@ -15,14 +15,26 @@ public class CoinsManager : MonoBehaviour
 
     [SerializeField] private Transform storePanel;
 
+    private int adCoinsReward = 20;
+
     private void Awake()
     {
         Instance = this;
 
-        storePanel.gameObject.SetActive(false);
+        if (storePanel != null)
+        {
+            storePanel.gameObject.SetActive(false);
+        }
 
-        storeButton.onClick.AddListener(OnStoreButtonClicked);
-        watchAdsButton.onClick.AddListener(OnWatchAdsButtonClicked);
+        if (storeButton != null)
+        {
+            storeButton.onClick.AddListener(OnStoreButtonClicked);
+        }
+
+        if (watchAdsButton != null)
+        {
+            watchAdsButton.onClick.AddListener(OnWatchAdsButtonClicked);
+        }
 
         UpdateCoinsText();
     }
@@ -38,7 +50,16 @@ public class CoinsManager : MonoBehaviour
 
         RewardedAds.Instance.LoadAd(() =>
         {
-            RewardedAds.Instance.ShowAd();
+            RewardedAds.Instance.ShowAd(() =>
+            {
+                var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
+                var newPlayerBalance = int.Parse(playerBalance) + adCoinsReward;
+
+                PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
+                PlayerPrefs.Save();
+
+                UpdateCoinsText();
+            });
         });
     }
 
@@ -47,5 +68,10 @@ public class CoinsManager : MonoBehaviour
         var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
 
         coinsText.text = $"{playerBalance}";
+    }
+
+    public int GetAdCoinsReward()
+    {
+        return adCoinsReward;
     }
 }

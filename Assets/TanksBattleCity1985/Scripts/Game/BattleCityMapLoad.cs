@@ -74,6 +74,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 var newPlayerBalance = int.Parse(playerBalance) + 1;
 
                 PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
+                PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, $"{nextLevel}");
                 PlayerPrefs.Save();
 
                 var isCustomMap = bool.Parse(PlayerPrefs.GetString(StaticStrings.IS_CUSTOM_MAP, "false"));
