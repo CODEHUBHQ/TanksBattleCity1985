@@ -27,17 +27,25 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Start()
     {
-        var gameButtonController = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "true"));
+        var joystickType = int.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "0"));
 
-        if (gameButtonController)
+        if (joystickType == 0)
         {
             joystickStick.gameObject.SetActive(true);
             joystickDpad.gameObject.SetActive(false);
+            movementButtons.gameObject.SetActive(false);
         }
-        else
+        else if (joystickType == 1)
         {
-            joystickStick.gameObject.SetActive(false);
             joystickDpad.gameObject.SetActive(true);
+            joystickStick.gameObject.SetActive(false);
+            movementButtons.gameObject.SetActive(false);
+        }
+        else if (joystickType == 2)
+        {
+            movementButtons.gameObject.SetActive(true);
+            joystickStick.gameObject.SetActive(false);
+            joystickDpad.gameObject.SetActive(false);
         }
     }
 
