@@ -75,6 +75,14 @@ public class BattleCityMapLoad : MonoBehaviour
 
                 PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
                 PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, $"{nextLevel}");
+
+                var maxUnLockedLevel = PlayerPrefs.GetString(StaticStrings.MAX_UNLOCKED_LEVEL, "1");
+
+                if (nextLevel > int.Parse(maxUnLockedLevel))
+                {
+                    PlayerPrefs.SetString(StaticStrings.MAX_UNLOCKED_LEVEL, $"{nextLevel}");
+                }
+
                 PlayerPrefs.Save();
 
                 CoinsManager.Instance.UpdateCoinsText();

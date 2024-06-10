@@ -9,6 +9,7 @@ public static class StaticStrings
     public const string PLAYER_HIGH_SCORE_PREF_KEY = "PlayerHighScore";
     public const string PLAYER_BALANCE = "PlayerBalance";
     public const string CURRENT_LEVEL = "CurrentLevel";
+    public const string MAX_UNLOCKED_LEVEL = "MaxUnlockedLevel";
     public const string IS_CUSTOM_MAP = "IsCustomMap";
     public const string CUSTOM_MAP = "CustomMap";
     public const string GAME_SETTINGS_SOUND = "GameSound";

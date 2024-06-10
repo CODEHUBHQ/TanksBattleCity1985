@@ -4,8 +4,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
-using System.Reflection;
 
 public class LevelsPanel : MonoBehaviour
 {
@@ -22,6 +20,8 @@ public class LevelsPanel : MonoBehaviour
 
     [SerializeField] private Button unLockLevelYesButton;
     [SerializeField] private Button unLockLevelNoButton;
+
+    [SerializeField] private StagesSO stagesSO;
 
     private int unLockLevelCost = 100;
 
@@ -40,16 +40,22 @@ public class LevelsPanel : MonoBehaviour
 
     public void LoadLevels()
     {
-        var currentLevel = PlayerPrefs.GetString(StaticStrings.CURRENT_LEVEL, "1");
+        var maxUnLockedLevel = PlayerPrefs.GetString(StaticStrings.MAX_UNLOCKED_LEVEL, "1");
 
-        for (int i = 0; i < 35; i++)
+        // clear levels content
+        foreach (Transform child in levelsContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < stagesSO.stageSOList.Count; i++)
         {
             var levelInstance = Instantiate(levelPrefab, levelsContent);
 
             levelInstance.Find("Icon").GetComponent<Image>().sprite = levelsIcons[i];
             levelInstance.Find("LevelNumberBG").Find("LevelText").GetComponent<TMP_Text>().text = $"{i + 1}";
 
-            if (int.Parse(currentLevel) + 1 == i + 1)
+            if (int.Parse(maxUnLockedLevel) + 1 == i + 1)
             {
                 levelInstance.Find("LockedIcon").gameObject.SetActive(true);
                 levelInstance.Find("LockedIcon").GetComponent<Image>().color = Color.yellow;
@@ -62,7 +68,7 @@ public class LevelsPanel : MonoBehaviour
                 continue;
             }
 
-            if (int.Parse(currentLevel) >= i + 1)
+            if (int.Parse(maxUnLockedLevel) >= i + 1)
             {
                 levelInstance.Find("LockedIcon").gameObject.SetActive(false);
                 levelInstance.GetComponent<Button>().interactable = true;
@@ -114,6 +120,14 @@ public class LevelsPanel : MonoBehaviour
 
             PlayerPrefs.SetString(StaticStrings.PLAYER_BALANCE, $"{newPlayerBalance}");
             PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, $"{index}");
+
+            var maxUnLockedLevel = PlayerPrefs.GetString(StaticStrings.MAX_UNLOCKED_LEVEL, "1");
+
+            if (index > int.Parse(maxUnLockedLevel))
+            {
+                PlayerPrefs.SetString(StaticStrings.MAX_UNLOCKED_LEVEL, $"{index}");
+            }
+
             PlayerPrefs.Save();
 
             CoinsManager.Instance.UpdateCoinsText();
