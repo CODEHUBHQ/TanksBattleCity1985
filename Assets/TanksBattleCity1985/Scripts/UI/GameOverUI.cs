@@ -21,18 +21,20 @@ public class GameOverUI : MonoBehaviour
         }
         else
         {
-            BattleCityMapLoad.Instance.LoadMap(1);
+            LoadingManager.LoadScene(LoadingManager.Scene.MenuScene);
 
-            var gameOverAnimation = GetComponent<Animation>();
+            //BattleCityMapLoad.Instance.LoadMap(1);
 
-            GameManager.Instance.SetIsGameOver(false);
+            //var gameOverAnimation = GetComponent<Animation>();
 
-            gameObject.SetActive(false);
+            //GameManager.Instance.SetIsGameOver(false);
 
-            gameOverAnimation.Rewind();
-            gameOverAnimation.Play();
-            gameOverAnimation.Sample();
-            gameOverAnimation.Stop();
+            //gameObject.SetActive(false);
+
+            //gameOverAnimation.Rewind();
+            //gameOverAnimation.Play();
+            //gameOverAnimation.Sample();
+            //gameOverAnimation.Stop();
         }
     }
 }
