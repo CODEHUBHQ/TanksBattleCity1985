@@ -19,11 +19,6 @@ public class JoystickController : MonoBehaviour
     [SerializeField] private Image moveRightButtonIconImage;
     [SerializeField] private Image moveLeftButtonIconImage;
 
-    private void Awake()
-    {
-        moveDownButtonIconImage.color = new Color32(89, 89, 89, 255);
-    }
-
     private void Update()
     {
         if (!movementButtons.activeSelf) return;
