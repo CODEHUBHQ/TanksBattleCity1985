@@ -71,14 +71,6 @@ public class MapEditorGameMenuUI : MonoBehaviour
 
     private void NewMapButtonOnClick()
     {
-        if (!runOnce)
-        {
-            mainMenuOrderedButtons[0].interactable = true;
-            mainMenuOrderedButtons[0].transform.Find("ResumeText").GetComponent<TMP_Text>().color = new Color(255f, 255f, 255f, 1f);
-
-            runOnce = true;
-        }
-
         var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
 
         if (int.Parse(playerBalance) >= newMapCost)
@@ -102,6 +94,9 @@ public class MapEditorGameMenuUI : MonoBehaviour
 
                 MapEditorHandler.Instance.SetIsPaused(false);
                 MapEditorHandler.Instance.NewMap();
+
+                mainMenuOrderedButtons[0].interactable = true;
+                mainMenuOrderedButtons[0].transform.Find("ResumeText").GetComponent<TMP_Text>().color = new Color(255f, 255f, 255f, 1f);
             });
         }
         else
@@ -121,7 +116,11 @@ public class MapEditorGameMenuUI : MonoBehaviour
         loadMapContainer.SetActive(true);
 
         MapEditorHandler.Instance.SetIsPaused(true);
-        MapEditorLoadMapHandler.Instance.LoadCustomMaps();
+        MapEditorLoadMapHandler.Instance.LoadCustomMaps(() =>
+        {
+            mainMenuOrderedButtons[0].interactable = true;
+            mainMenuOrderedButtons[0].transform.Find("ResumeText").GetComponent<TMP_Text>().color = new Color(255f, 255f, 255f, 1f);
+        });
     }
 
     private void PlayMapButtonOnClick()

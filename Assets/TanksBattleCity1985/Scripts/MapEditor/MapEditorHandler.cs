@@ -375,6 +375,8 @@ public class MapEditorHandler : MonoBehaviour
 
     public void NewMap()
     {
+        currentMapIndex = -1;
+
         foreach (var pair in instantiatedEditorPrefabs)
         {
             Destroy(pair.Value);

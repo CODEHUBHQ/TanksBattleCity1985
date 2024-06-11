@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class MapEditorLoadMapHandler : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class MapEditorLoadMapHandler : MonoBehaviour
         LoadCustomMaps();
     }
 
-    public void LoadCustomMaps()
+    public void LoadCustomMaps(Action onCustomMapLoaded = null)
     {
         foreach (Transform child in customMapsScrollviewContent)
         {
@@ -60,7 +61,7 @@ public class MapEditorLoadMapHandler : MonoBehaviour
 
                 mapNameButtonGameObject.onClick.AddListener(() =>
                 {
-                    LoadMapByIndex(index);
+                    LoadMapByIndex(index, onCustomMapLoaded);
                 });
             }
         }
@@ -70,13 +71,15 @@ public class MapEditorLoadMapHandler : MonoBehaviour
         }
     }
 
-    public void LoadMapByIndex(int index)
+    public void LoadMapByIndex(int index, Action onCustomMapLoaded = null)
     {
         loadMapContainer.gameObject.SetActive(false);
 
         MapEditorHandler.Instance.LoadMapFromString(MapEditorHandler.Instance.GetCustomMaps()[index], index);
 
         MapEditorHandler.Instance.SetIsPaused(false);
+
+        onCustomMapLoaded?.Invoke();
     }
 
     public bool IsOpen()
