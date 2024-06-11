@@ -9,11 +9,11 @@ public class ButtonLongPress : MonoBehaviour, IPointerUpHandler, IPointerMoveHan
 
     public void OnPointerMove(PointerEventData eventData)
     {
-        OnLongPressDown?.Invoke();
+        //OnLongPressDown?.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        OnLongPressUp?.Invoke();
+        //OnLongPressUp?.Invoke();
     }
 }
