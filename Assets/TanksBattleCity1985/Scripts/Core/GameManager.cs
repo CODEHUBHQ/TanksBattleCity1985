@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Instance = this;
 
-        Application.targetFrameRate = 59;
+        Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
         GetComponent<CountdownTimer>().enabled = false;
