@@ -24,7 +24,7 @@ public class PlayerListEntry : MonoBehaviour
 
     private void Awake()
     {
-        PlayerNumbering.OnPlayerNumberingChanged += PlayerNumbering_OnPlayerNumberingChanged;
+        //PlayerNumbering.OnPlayerNumberingChanged += PlayerNumbering_OnPlayerNumberingChanged;
     }
 
     private void Start()
@@ -67,22 +67,19 @@ public class PlayerListEntry : MonoBehaviour
 
     private void OnDestroy()
     {
-        PlayerNumbering.OnPlayerNumberingChanged -= PlayerNumbering_OnPlayerNumberingChanged;
+        //PlayerNumbering.OnPlayerNumberingChanged -= PlayerNumbering_OnPlayerNumberingChanged;
     }
 
     public void Initialize(int playerId, string playerName)
     {
         ownerId = playerId;
         playerNameText.text = playerName;
-    }
 
-    private void PlayerNumbering_OnPlayerNumberingChanged()
-    {
         foreach (var player in PhotonNetwork.PlayerList)
         {
             if (player.ActorNumber == ownerId)
             {
-                var plaeyrSprite = LobbyHandler.Instance.GetPlayerSprite(player.GetPlayerNumber());
+                var plaeyrSprite = LobbyHandler.Instance.GetPlayerSprite(player.ActorNumber - 1);
 
                 if (plaeyrSprite != null)
                 {
@@ -91,6 +88,22 @@ public class PlayerListEntry : MonoBehaviour
             }
         }
     }
+
+    //private void PlayerNumbering_OnPlayerNumberingChanged()
+    //{
+    //    foreach (var player in PhotonNetwork.PlayerList)
+    //    {
+    //        if (player.ActorNumber == ownerId)
+    //        {
+    //            var plaeyrSprite = LobbyHandler.Instance.GetPlayerSprite(player.ActorNumber - 1);
+
+    //            if (plaeyrSprite != null)
+    //            {
+    //                playerImage.sprite = plaeyrSprite;
+    //            }
+    //        }
+    //    }
+    //}
 
     public void SetPlayerReady(bool isPlayerReady)
     {

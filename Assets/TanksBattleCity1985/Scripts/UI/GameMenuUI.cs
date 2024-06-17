@@ -76,7 +76,9 @@ public class GameMenuUI : MonoBehaviour
     {
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            photonView.RPC(nameof(GoToMainMenuPunRPC), RpcTarget.All);
+            GameManager.Instance.ToggleGameIsPaused();
+
+            PhotonNetwork.Disconnect();
         }
         else
         {
@@ -94,11 +96,5 @@ public class GameMenuUI : MonoBehaviour
     public void ResumeGamePunRPC()
     {
         ResumeGame();
-    }
-
-    [PunRPC]
-    public void GoToMainMenuPunRPC()
-    {
-        GoToMainMenu();
     }
 }

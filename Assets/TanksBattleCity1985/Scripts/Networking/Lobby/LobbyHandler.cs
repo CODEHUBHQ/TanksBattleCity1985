@@ -174,7 +174,10 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        SetActivePanel(selectionPanel.name);
+        if (selectionPanel != null)
+        {
+            SetActivePanel(selectionPanel.name);
+        }
 
         foreach (var entry in playerListEntries.Values)
         {

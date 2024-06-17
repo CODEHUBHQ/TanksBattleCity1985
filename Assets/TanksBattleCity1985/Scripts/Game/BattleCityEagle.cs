@@ -87,9 +87,16 @@ public class BattleCityEagle : MonoBehaviour
             GameManager.Instance.PlayerOne.GetComponent<BattleCityPlayer>().SetLives(3);
         }
 
-        gameOverUI.SetActive(true);
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(FinishGamePunRPC), RpcTarget.All);
+        }
+        else
+        {
+            gameOverUI.SetActive(true);
 
-        animator.SetBool(StaticStrings.IS_DESTROYED, false);
+            animator.SetBool(StaticStrings.IS_DESTROYED, false);
+        }
     }
 
     public void ResetSpawnedEnemyList()
@@ -249,7 +256,10 @@ public class BattleCityEagle : MonoBehaviour
         {
             foreach (var sprite in sprites)
             {
-                sprite.enabled = !sprite.enabled;
+                if (sprite != null)
+                {
+                    sprite.enabled = !sprite.enabled;
+                }
             }
 
             yield return new WaitForSeconds(0.2f);
@@ -431,5 +441,13 @@ public class BattleCityEagle : MonoBehaviour
 
         StopCoroutine(nameof(DestroyEagleBaseSteelDelayed));
         StartCoroutine(nameof(DestroyEagleBaseSteelDelayed), baseSteelSprites);
+    }
+
+    [PunRPC]
+    public void FinishGamePunRPC()
+    {
+        gameOverUI.SetActive(true);
+
+        animator.SetBool(StaticStrings.IS_DESTROYED, false);
     }
 }
