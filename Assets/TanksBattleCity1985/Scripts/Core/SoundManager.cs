@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource highScoreSound;
     [SerializeField] private AudioSource bonusPTSSound;
 
+    private PhotonView photonView;
+
     private float gameSoundVolume;
 
     private bool gameSound;
@@ -32,6 +35,8 @@ public class SoundManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        photonView = GetComponent<PhotonView>();
 
         gameSound = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_SOUND, "true"));
         gameSoundMove = bool.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_SOUND_MOVE, "true"));
@@ -78,7 +83,14 @@ public class SoundManager : MonoBehaviour
     {
         if (!gameSound) return;
 
-        levelStartingSound.Play();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(PlayLevelStartingSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            levelStartingSound.Play();
+        }
     }
 
     public void StopLevelStartingSound()
@@ -90,12 +102,26 @@ public class SoundManager : MonoBehaviour
     {
         if (!gameSound) return;
 
-        gameOverSound.Play();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(PlayGameOverSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            gameOverSound.Play();
+        }
     }
 
     public void StopGameOverSound()
     {
-        gameOverSound.Stop();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(StopGameOverSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            gameOverSound.Stop();
+        }
     }
 
     public void PlayTankDestroySound()
@@ -186,24 +212,52 @@ public class SoundManager : MonoBehaviour
     {
         if (!gameSound) return;
 
-        powerUpTakenSound.Play();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(PlayPowerUpTakenSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            powerUpTakenSound.Play();
+        }
     }
 
     public void StopPowerUpTakenSound()
     {
-        powerUpTakenSound.Stop();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(StopPowerUpTakenSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            powerUpTakenSound.Stop();
+        }
     }
 
     public void PlayPowerUpShowUpSound()
     {
         if (!gameSound) return;
 
-        powerUpShowUpSound.Play();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(PlayPowerUpShowUpSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            powerUpShowUpSound.Play();
+        }
     }
 
     public void StopPowerUpShowUpSound()
     {
-        powerUpShowUpSound.Stop();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(StopPowerUpShowUpSoundPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            powerUpShowUpSound.Stop();
+        }
     }
 
     public void PlayScoreSound()
@@ -267,5 +321,47 @@ public class SoundManager : MonoBehaviour
     public bool IsVibrateEnabled()
     {
         return gameVibrate;
+    }
+
+    [PunRPC]
+    public void PlayLevelStartingSoundPunRPC()
+    {
+        levelStartingSound.Play();
+    }
+
+    [PunRPC]
+    public void PlayPowerUpTakenSoundPunRPC()
+    {
+        powerUpTakenSound.Play();
+    }
+
+    [PunRPC]
+    public void StopPowerUpTakenSoundPunRPC()
+    {
+        powerUpTakenSound.Stop();
+    }
+
+    [PunRPC]
+    public void PlayPowerUpShowUpSoundPunRPC()
+    {
+        powerUpShowUpSound.Play();
+    }
+
+    [PunRPC]
+    public void StopPowerUpShowUpSoundPunRPC()
+    {
+        powerUpShowUpSound.Stop();
+    }
+
+    [PunRPC]
+    public void PlayGameOverSoundPunRPC()
+    {
+        gameOverSound.Play();
+    }
+
+    [PunRPC]
+    public void StopGameOverSoundPunRPC()
+    {
+        gameOverSound.Stop();
     }
 }

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -120,7 +121,17 @@ public class BattleCityBulletIronDestroy : MonoBehaviour
             float curr = wallAnimator.GetFloat(StaticStrings.LEFT_NUMPAD);
 
             // Strong shot will allways destroy a piece (and maybe two)
-            Destroy(t.gameObject);
+            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.Destroy(t.gameObject);
+                }
+            }
+            else
+            {
+                Destroy(t.gameObject);
+            }
 
             // Horizontal shot
             if (inputX == 1 && curr.IsIn(3, 6, 9))

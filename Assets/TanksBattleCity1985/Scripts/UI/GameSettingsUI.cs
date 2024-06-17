@@ -63,6 +63,7 @@ public class GameSettingsUI : MonoBehaviour
         }
         catch (System.Exception ex)
         {
+            Debug.LogError($"LoadGameSettings: {ex}");
             PlayerPrefs.SetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, $"0");
             PlayerPrefs.Save();
         }

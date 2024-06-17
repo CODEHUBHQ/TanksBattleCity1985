@@ -194,9 +194,17 @@ public class MapEditorHandler : MonoBehaviour
         //        customMaps[currentMapIndex] = map;
         //    }
 
+        //    customMaps.Clear();
+
+        //    customMaps.Add(map);
+
         //    var mapNumber = referenceMap.sprite.name.Contains("bc0") ? referenceMap.sprite.name.Split("bc0")[1] : referenceMap.sprite.name.Split("bc")[1];
 
         //    Debug.Log($"saving map to map{mapNumber}.txt");
+
+        //    var sprite = GetCustomMapSpriteByIndex(0);
+
+        //    BattleCityUtils.SaveSpriteToPng(sprite, $"map{mapNumber}.png");
 
         //    File.WriteAllText($"{Application.streamingAssetsPath}/Maps/map{mapNumber}.txt", map);
         //}

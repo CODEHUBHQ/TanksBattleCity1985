@@ -75,17 +75,16 @@ public class MenuUIManager : MonoBehaviour
     private void PlayerTwoButtonOnClick()
     {
         Debug.Log("PlayerTwoButtonOnClick");
-        comingSoonUI.Show(ComingSoonOpts.Multiplayer);
 
-        //PhotonNetwork.OfflineMode = true;
-        //NetworkManager.Instance.GameMode = GameMode.LocalMultiplayer;
+        PhotonNetwork.OfflineMode = false;
+        NetworkManager.Instance.GameMode = GameMode.Multiplayer;
 
-        //PlayerPrefs.SetString(StaticStrings.CUSTOM_MAP, "");
-        //PlayerPrefs.SetString(StaticStrings.IS_CUSTOM_MAP, "false");
-        //PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
-        //PlayerPrefs.Save();
+        PlayerPrefs.SetString(StaticStrings.CUSTOM_MAP, "");
+        PlayerPrefs.SetString(StaticStrings.IS_CUSTOM_MAP, "false");
+        PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, "1");
+        PlayerPrefs.Save();
 
-        //LoadingManager.LoadScene(LoadingManager.Scene.GameScene);
+        LoadingManager.LoadScene(LoadingManager.Scene.LobbyScene);
     }
 
     private void MultiplayerButtonOnClick()

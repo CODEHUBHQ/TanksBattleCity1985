@@ -7,7 +7,7 @@ using Photon.Pun;
 using TMPro;
 using System.Linq;
 
-public class BattleCityMapLoad : MonoBehaviour
+public class BattleCityMapLoad : MonoBehaviour, IPunObservable
 {
     public static BattleCityMapLoad Instance { get; private set; }
 
@@ -63,12 +63,15 @@ public class BattleCityMapLoad : MonoBehaviour
 
             LevelStatsUI.Instance.ShowPlayersStats(nextLevel - 1, () =>
             {
-                Time.timeScale = 0f;
-
-                InterstitialAds.Instance.LoadAd(() =>
+                if (NetworkManager.Instance == null || (NetworkManager.Instance != null && NetworkManager.Instance.GameMode != GameMode.Multiplayer))
                 {
-                    InterstitialAds.Instance.ShowAd();
-                });
+                    Time.timeScale = 0f;
+
+                    InterstitialAds.Instance.LoadAd(() =>
+                    {
+                        InterstitialAds.Instance.ShowAd();
+                    });
+                }
 
                 var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
                 var newPlayerBalance = int.Parse(playerBalance) + 1;
@@ -102,13 +105,23 @@ public class BattleCityMapLoad : MonoBehaviour
                         nextLevel = 1;
                     }
 
-                    StartCoroutine(LoadMapDelayed(nextLevel, battleCityEnemySpawning));
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            photonView.RPC(nameof(LoadMapDelayedPunRPC), RpcTarget.All, nextLevel);
+                        }
+                    }
+                    else
+                    {
+                        StartCoroutine(LoadMapDelayed(nextLevel, battleCityEnemySpawning));
+                    }
                 }
             });
         }
     }
 
-    public IEnumerator LoadMapDelayed(int level, BattleCityEnemySpawning battleCityEnemySpawning)
+    public IEnumerator LoadMapDelayed(int level, BattleCityEnemySpawning battleCityEnemySpawning = null)
     {
         loadingScreenLevelText.text = $"Stage {level}";
 
@@ -124,22 +137,51 @@ public class BattleCityMapLoad : MonoBehaviour
         loadingScreenAnimation.Sample();
         loadingScreenAnimation.Stop();
 
-        LoadMap(level);
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                LoadMap(level, () =>
+                {
+                    photonView.RPC(nameof(LoadMapCompletePunRPC), RpcTarget.All);
+                });
+            }
+        }
+        else
+        {
+            LoadMap(level, () =>
+            {
+                loadingScreen.gameObject.SetActive(false);
 
-        loadingScreen.gameObject.SetActive(false);
-
-        SetIsLoadingMap(false);
+                SetIsLoadingMap(false);
+            });
+        }
     }
 
-    public void LoadMap(int level)
+    public void LoadMap(int level, Action onGenerateMapComplete = null)
     {
         Level = level;
         currentLevel = level;
 
+        BattleCityEnemySpawning.Instance.SetInvokeOnce(false);
+
         // set game level number
         PlayerPrefs.SetString(StaticStrings.CURRENT_LEVEL, $"{level}");
         PlayerPrefs.Save();
-        BattleCityEagle.Instance.SetGameLevel(level);
+
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            var props = new ExitGames.Client.Photon.Hashtable()
+            {
+                { StaticStrings.PLAYER_LOADED_LEVEL, level }
+            };
+
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        }
+        else
+        {
+            BattleCityEagle.Instance.SetGameLevel(level);
+        }
 
         // stop coroutines
         StopAllCoroutines();
@@ -174,19 +216,36 @@ public class BattleCityMapLoad : MonoBehaviour
                 }
             }
         }
+        else if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(ResetPlayerPunRPC), RpcTarget.All);
+        }
 
         if (currentLevel == 1)
         {
             BattleCityEagle.Instance.ResetPlayersLives();
         }
 
-        // Enemy spawning reset
-        BattleCityEagle.Instance.ResetSpawnedEnemyList();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC(nameof(ResetSpawnedEnemyListPunRPC), RpcTarget.All);
+            }
+        }
+        else
+        {
+            // Enemy spawning reset
+            BattleCityEagle.Instance.ResetSpawnedEnemyList();
+        }
 
         spawnLocation.GetComponent<BattleCityEnemySpawning>().Reset();
 
         // Read map file
-        StartCoroutine(LoadMapFromStreamingAssets($"{Application.streamingAssetsPath}/Maps/map{currentLevel}.txt"));
+        StartCoroutine(LoadMapFromStreamingAssets($"{Application.streamingAssetsPath}/Maps/map{currentLevel}.txt", () =>
+        {
+            onGenerateMapComplete?.Invoke();
+        }));
 
         // powerUp reset
         powerUp.GetComponent<BattleCityPowerUp>().Reset();
@@ -249,7 +308,7 @@ public class BattleCityMapLoad : MonoBehaviour
         SoundManager.Instance.PlayLevelStartingSound();
     }
 
-    private IEnumerator LoadMapFromStreamingAssets(string path)
+    private IEnumerator LoadMapFromStreamingAssets(string path, Action onGenerateMapComplete = null)
     {
         if (path.Contains("://") || path.Contains(":///"))
         {
@@ -270,7 +329,10 @@ public class BattleCityMapLoad : MonoBehaviour
                     case UnityWebRequest.Result.Success:
                         var map = webRequest.downloadHandler.text.Split("\n");
 
-                        GenerateMap(map);
+                        GenerateMap(map, () =>
+                        {
+                            onGenerateMapComplete?.Invoke();
+                        });
                         break;
                 }
             }
@@ -279,7 +341,10 @@ public class BattleCityMapLoad : MonoBehaviour
         {
             var map = System.IO.File.ReadAllLines($"{Application.streamingAssetsPath}/Maps/map{currentLevel}.txt");
 
-            GenerateMap(map);
+            GenerateMap(map, () =>
+            {
+                onGenerateMapComplete?.Invoke();
+            });
         }
     }
 
@@ -303,7 +368,7 @@ public class BattleCityMapLoad : MonoBehaviour
         }
     }
 
-    private void GenerateMap(string[] map)
+    private void GenerateMap(string[] map, Action onGenerateMapComplete = null)
     {
         for (int i = 0; i < 26; i++)
         {
@@ -315,7 +380,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 {
                     if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
                     {
-                        t = PhotonNetwork.InstantiateRoomObject(wallPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), wallPrefab.transform.rotation, 0);
+                        t = PhotonNetwork.Instantiate(wallPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), wallPrefab.transform.rotation, 0);
                     }
                     else
                     {
@@ -326,7 +391,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 {
                     if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
                     {
-                        t = PhotonNetwork.InstantiateRoomObject(ironPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), ironPrefab.transform.rotation, 0);
+                        t = PhotonNetwork.Instantiate(ironPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), ironPrefab.transform.rotation, 0);
                     }
                     else
                     {
@@ -337,7 +402,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 {
                     if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
                     {
-                        t = PhotonNetwork.InstantiateRoomObject(bushPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), bushPrefab.transform.rotation, 0);
+                        t = PhotonNetwork.Instantiate(bushPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), bushPrefab.transform.rotation, 0);
                     }
                     else
                     {
@@ -348,7 +413,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 {
                     if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
                     {
-                        t = PhotonNetwork.InstantiateRoomObject(icePrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), icePrefab.transform.rotation, 0);
+                        t = PhotonNetwork.Instantiate(icePrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), icePrefab.transform.rotation, 0);
                     }
                     else
                     {
@@ -359,7 +424,7 @@ public class BattleCityMapLoad : MonoBehaviour
                 {
                     if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
                     {
-                        t = PhotonNetwork.InstantiateRoomObject(waterPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), waterPrefab.transform.rotation, 0);
+                        t = PhotonNetwork.Instantiate(waterPrefab.name, new Vector3(j - 13, 13 - (i + 1), 0), waterPrefab.transform.rotation, 0);
                     }
                     else
                     {
@@ -378,6 +443,8 @@ public class BattleCityMapLoad : MonoBehaviour
         {
             photonView.RPC(nameof(ParentMapObjects), RpcTarget.Others);
         }
+
+        onGenerateMapComplete?.Invoke();
     }
 
     public void SetIsLoadingMap(bool isLoadingMap)
@@ -399,6 +466,58 @@ public class BattleCityMapLoad : MonoBehaviour
         foreach (var mapObject in mapObjects)
         {
             mapObject.transform.parent = generatedWallContainer;
+        }
+    }
+
+    [PunRPC]
+    public void ResetSpawnedEnemyListPunRPC()
+    {
+        // Enemy spawning reset
+        BattleCityEagle.Instance.ResetSpawnedEnemyList();
+    }
+
+    [PunRPC]
+    public void ResetPlayerPunRPC()
+    {
+        GameManager.Instance.ResetPlayersStats();
+        var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
+
+        foreach (var battleCityPlayer in battleCityPlayers)
+        {
+            // player reset
+            battleCityPlayer.gameObject.GetComponent<BattleCityPlayerMovement>().ResetPosition();
+            battleCityPlayer.gameObject.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
+            battleCityPlayer.gameObject.GetComponent<BattleCityShooting>().SetShooting(false);
+            battleCityPlayer.ResetLevelScore();
+            battleCityPlayer.SetShield(6);
+        }
+    }
+
+    [PunRPC]
+    public void LoadMapDelayedPunRPC(int nextLevel)
+    {
+        StartCoroutine(LoadMapDelayed(nextLevel));
+    }
+
+    [PunRPC]
+    public void LoadMapCompletePunRPC()
+    {
+        loadingScreen.gameObject.SetActive(false);
+
+        SetIsLoadingMap(false);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(currentLevel);
+            stream.SendNext(isLoadingMap);
+        }
+        else
+        {
+            currentLevel = (int)stream.ReceiveNext();
+            isLoadingMap = (bool)stream.ReceiveNext();
         }
     }
 }

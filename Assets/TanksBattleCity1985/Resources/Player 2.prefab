@@ -96,9 +96,6 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -136,7 +133,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &8693614947249285156
 Animator:
-  serializedVersion: 7
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -150,7 +147,6 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -166,7 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1467666674427535530}
   - component: {fileID: 7127137845761789629}
-  - component: {fileID: 4824689936457924470}
+  - component: {fileID: 1696200520520512669}
   - component: {fileID: 1409796865890645433}
   - component: {fileID: 6784835113460106369}
   - component: {fileID: 7548139142302361292}
@@ -217,13 +213,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 0
   ObservedComponents:
-  - {fileID: 3580235860991380841}
-  - {fileID: 4824689936457924470}
+  - {fileID: 1696200520520512669}
   - {fileID: 1409796865890645433}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4824689936457924470
+--- !u!114 &1696200520520512669
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,7 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizePosition: 1
-  m_SynchronizeRotation: 0
+  m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
 --- !u!114 &1409796865890645433
@@ -255,28 +250,28 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 1
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: input_x
   - Type: 1
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: input_y
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: isMoving
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: isShooting
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: hit
   - Type: 3
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: level
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: shield
   m_SynchronizeLayers:
-  - SynchronizeType: 2
+  - SynchronizeType: 1
     LayerIndex: 0
 --- !u!212 &6784835113460106369
 SpriteRenderer:
@@ -295,9 +290,6 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -322,7 +314,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 4
-  m_Sprite: {fileID: 21300040, guid: 359af67a3c6b6b940b1fa04007d166ed, type: 3}
+  m_Sprite: {fileID: 21300048, guid: 359af67a3c6b6b940b1fa04007d166ed, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -335,7 +327,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &7548139142302361292
 Animator:
-  serializedVersion: 7
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -349,7 +341,6 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -390,7 +381,6 @@ BoxCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8830359699476620358}
   m_Enabled: 1
-  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -414,8 +404,7 @@ BoxCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -426,6 +415,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
+  serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &3580235860991380841
@@ -471,3 +461,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 5101185563668126581, guid: 9b5b95b013411c546b02b462c94aa1ef, type: 3}
   isNPC: 0
+  alreadyShot: 0

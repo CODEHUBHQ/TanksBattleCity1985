@@ -22,6 +22,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 
     public void InitializeAds()
     {
+#if !UNITY_STANDALONE
 #if UNITY_IOS
             gameId = iOSGameId;
 #elif UNITY_ANDROID
@@ -33,15 +34,18 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
         {
             Advertisement.Initialize(gameId, testMode, this);
         }
+#endif
     }
 
 
     public void OnInitializationComplete()
     {
+#if !UNITY_STANDALONE
         Debug.Log("Unity Ads initialization complete.");
 
         interstitialAds.LoadAd();
         rewardedAds.LoadAd();
+#endif
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Photon.Pun.Demo.SlotRacer.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,10 +29,13 @@ public class BattleCityEagle : MonoBehaviour
 
     private List<GameObject> enemiesList;
 
+    private PhotonView photonView;
+
     private void Awake()
     {
         Instance = this;
 
+        photonView = GetComponent<PhotonView>();
         animator = GetComponent<Animator>();
 
         enemiesList = new List<GameObject>();
@@ -77,13 +81,10 @@ public class BattleCityEagle : MonoBehaviour
 
     public void FinishGame()
     {
-        GameManager.Instance.PlayerOne.GetComponent<BattleCityPlayer>().SetLevel(1);
-        GameManager.Instance.PlayerOne.GetComponent<BattleCityPlayer>().SetLives(3);
-
-        if (GameManager.Instance.PlayerTwo != null)
+        if (NetworkManager.Instance == null || (NetworkManager.Instance != null && NetworkManager.Instance.GameMode != GameMode.Multiplayer))
         {
-            GameManager.Instance.PlayerTwo.GetComponent<BattleCityPlayer>().SetLevel(1);
-            GameManager.Instance.PlayerTwo.GetComponent<BattleCityPlayer>().SetLives(3);
+            GameManager.Instance.PlayerOne.GetComponent<BattleCityPlayer>().SetLevel(1);
+            GameManager.Instance.PlayerOne.GetComponent<BattleCityPlayer>().SetLives(3);
         }
 
         gameOverUI.SetActive(true);
@@ -116,10 +117,20 @@ public class BattleCityEagle : MonoBehaviour
 
     public void ResetPlayersLives()
     {
-        playerOneLivesDigitNumber[0].sprite = numbers[3];
-        playerOneLivesDigitNumber[1].gameObject.SetActive(false);
-        playerTwoLivesDigitNumber[0].sprite = numbers[3];
-        playerTwoLivesDigitNumber[1].gameObject.SetActive(false);
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC(nameof(ResetPlayersLivesPunRPC), RpcTarget.All);
+            }
+        }
+        else
+        {
+            playerOneLivesDigitNumber[0].sprite = numbers[3];
+            playerOneLivesDigitNumber[1].gameObject.SetActive(false);
+            playerTwoLivesDigitNumber[0].sprite = numbers[3];
+            playerTwoLivesDigitNumber[1].gameObject.SetActive(false);
+        }
     }
 
     public void SetPlayerLives(int playerIndex, int lives)
@@ -127,6 +138,12 @@ public class BattleCityEagle : MonoBehaviour
         if (playerIndex == 0)
         {
             var intLivesArray = BattleCityUtils.GetIntArray(lives);
+
+            if (intLivesArray.Length == 0)
+            {
+                playerOneLivesDigitNumber[0].gameObject.SetActive(true);
+                playerOneLivesDigitNumber[0].sprite = numbers[0];
+            }
 
             for (int i = 0; i < intLivesArray.Length; i++)
             {
@@ -140,6 +157,12 @@ public class BattleCityEagle : MonoBehaviour
         if (playerIndex == 1)
         {
             var intLivesArray = BattleCityUtils.GetIntArray(lives);
+
+            if (intLivesArray.Length == 0)
+            {
+                playerTwoLivesDigitNumber[0].gameObject.SetActive(true);
+                playerTwoLivesDigitNumber[0].sprite = numbers[0];
+            }
 
             for (int i = 0; i < intLivesArray.Length; i++)
             {
@@ -172,40 +195,47 @@ public class BattleCityEagle : MonoBehaviour
 
     public void RepairAndUpgradeEagleWallBaseToSteel()
     {
-        var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
-        var baseSteelSprites = new List<SpriteRenderer>();
-        var wallPrefab = BattleCityMapLoad.Instance.WallPrefab;
-        var ironPrefab = BattleCityMapLoad.Instance.IronPrefab;
-
-        foreach (var coords in eagleBaseWallCoords)
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            var ironGameObject = Instantiate(ironPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+            photonView.RPC(nameof(RepairAndUpgradeEagleWallBaseToSteelPunRPC), RpcTarget.MasterClient);
+        }
+        else
+        {
+            var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
+            var baseSteelSprites = new List<SpriteRenderer>();
+            var wallPrefab = BattleCityMapLoad.Instance.WallPrefab;
+            var ironPrefab = BattleCityMapLoad.Instance.IronPrefab;
 
-            ironGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
-
-            var ironSpriteRenderer = ironGameObject.GetComponent<SpriteRenderer>();
-
-            ironSpriteRenderer.sortingOrder = 5;
-
-            baseSteelSprites.Add(ironSpriteRenderer);
-
-            // add temp brick wall and remove old one
-            var wallTransform = ts.GetByNameAndCoords("Wall", coords.x, coords.y);
-
-            if (wallTransform != null)
+            foreach (var coords in eagleBaseWallCoords)
             {
-                Destroy(wallTransform.gameObject);
+                var ironGameObject = Instantiate(ironPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+
+                ironGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+
+                var ironSpriteRenderer = ironGameObject.GetComponent<SpriteRenderer>();
+
+                ironSpriteRenderer.sortingOrder = 5;
+
+                baseSteelSprites.Add(ironSpriteRenderer);
+
+                // add temp brick wall and remove old one
+                var wallTransform = ts.GetByNameAndCoords("Wall", coords.x, coords.y);
+
+                if (wallTransform != null)
+                {
+                    Destroy(wallTransform.gameObject);
+                }
+
+                var wallGameObject = Instantiate(wallPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+
+                wallGameObject.name = $"Temp";
+
+                wallGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
             }
 
-            var wallGameObject = Instantiate(wallPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
-
-            wallGameObject.name = $"Temp";
-
-            wallGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+            StopCoroutine(nameof(DestroyEagleBaseSteelDelayed));
+            StartCoroutine(nameof(DestroyEagleBaseSteelDelayed), baseSteelSprites);
         }
-
-        StopCoroutine(nameof(DestroyEagleBaseSteelDelayed));
-        StartCoroutine(nameof(DestroyEagleBaseSteelDelayed), baseSteelSprites);
     }
 
     public IEnumerator DestroyEagleBaseSteelDelayed(List<SpriteRenderer> sprites)
@@ -227,7 +257,17 @@ public class BattleCityEagle : MonoBehaviour
 
         foreach (var sprite in sprites)
         {
-            Destroy(sprite.gameObject);
+            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.Destroy(sprite.gameObject);
+                }
+            }
+            else
+            {
+                Destroy(sprite.gameObject);
+            }
         }
 
         var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
@@ -240,12 +280,156 @@ public class BattleCityEagle : MonoBehaviour
 
             if (wallTransform != null)
             {
-                Destroy(wallTransform.gameObject);
+                if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(wallTransform.gameObject);
+                    }
+                }
+                else
+                {
+                    Destroy(wallTransform.gameObject);
+                }
             }
 
-            var wallGameObject = Instantiate(wallPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    var wallGameObjectInstance = PhotonNetwork.Instantiate(wallPrefab.name, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+                    var wallGameObjectPhotonViewID = wallGameObjectInstance.GetComponent<PhotonView>().ViewID;
 
-            wallGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+                    photonView.RPC(nameof(ParentWallPunRPC), RpcTarget.All, wallGameObjectPhotonViewID);
+                }
+            }
+            else
+            {
+                var wallGameObject = Instantiate(wallPrefab, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+
+                wallGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+            }
         }
+    }
+
+    [PunRPC]
+    public void ResetPlayersLivesPunRPC()
+    {
+        playerOneLivesDigitNumber[0].sprite = numbers[3];
+        playerOneLivesDigitNumber[1].gameObject.SetActive(false);
+        playerTwoLivesDigitNumber[0].sprite = numbers[3];
+        playerTwoLivesDigitNumber[1].gameObject.SetActive(false);
+    }
+
+    [PunRPC]
+    public void RepairAndUpgradeEagleWallBaseToSteelPunRPC()
+    {
+        var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
+        var baseSteelSprites = new List<SpriteRenderer>();
+        var wallPrefab = BattleCityMapLoad.Instance.WallPrefab;
+        var ironPrefab = BattleCityMapLoad.Instance.IronPrefab;
+
+        var ironGameObjectsArray = new int[eagleBaseWallCoords.Count];
+        var wallGameObjectsArray = new int[eagleBaseWallCoords.Count];
+
+        var index = 0;
+
+        foreach (var coords in eagleBaseWallCoords)
+        {
+            var ironGameObject = PhotonNetwork.Instantiate(ironPrefab.name, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+
+            var ironGameObjectPhotonViewID = ironGameObject.GetComponent<PhotonView>().ViewID;
+
+            ironGameObjectsArray[index] = ironGameObjectPhotonViewID;
+
+            var ironSpriteRenderer = ironGameObject.GetComponent<SpriteRenderer>();
+
+            ironSpriteRenderer.sortingOrder = 5;
+
+            baseSteelSprites.Add(ironSpriteRenderer);
+
+            // add temp brick wall and remove old one
+            var wallTransform = ts.GetByNameAndCoords("Wall", coords.x, coords.y);
+
+            if (wallTransform != null)
+            {
+                PhotonNetwork.Destroy(wallTransform.gameObject);
+            }
+
+            var wallGameObject = PhotonNetwork.Instantiate(wallPrefab.name, new Vector3(coords.x, coords.y, 0), wallPrefab.transform.rotation);
+
+            wallGameObject.name = $"Temp";
+
+            var wallGameObjectPhotonViewID = wallGameObject.GetComponent<PhotonView>().ViewID;
+
+            wallGameObjectsArray[index] = wallGameObjectPhotonViewID;
+
+            index++;
+        }
+
+        photonView.RPC(nameof(ParentWallArrayPunRPC), RpcTarget.All, ironGameObjectsArray, wallGameObjectsArray);
+
+        photonView.RPC(nameof(DestroyEagleBaseSteelDelayedPunRPC), RpcTarget.All, ironGameObjectsArray);
+    }
+
+    [PunRPC]
+    public void ParentWallPunRPC(int photonViewID)
+    {
+        var go = PhotonView.Find(photonViewID);
+
+        if (go != null)
+        {
+            go.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+        }
+    }
+
+
+    [PunRPC]
+    public void ParentWallArrayPunRPC(int[] ironGameObjectsArray, int[] wallGameObjectsArray)
+    {
+        foreach (var ironPhotonViewID in ironGameObjectsArray)
+        {
+            var ironGameObject = PhotonView.Find(ironPhotonViewID);
+
+            if (ironGameObject != null)
+            {
+                var ironSpriteRenderer = ironGameObject.GetComponent<SpriteRenderer>();
+
+                ironSpriteRenderer.sortingOrder = 5;
+
+                ironGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+            }
+        }
+
+        foreach (var wallPhotonViewID in wallGameObjectsArray)
+        {
+            var wallGameObject = PhotonView.Find(wallPhotonViewID);
+
+            if (wallGameObject != null)
+            {
+                wallGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedWallContainer;
+            }
+        }
+    }
+
+    [PunRPC]
+    public void DestroyEagleBaseSteelDelayedPunRPC(int[] ironGameObjectsArray)
+    {
+        var baseSteelSprites = new List<SpriteRenderer>();
+
+        foreach (var ironGameObjectPhotonViewID in ironGameObjectsArray)
+        {
+            var ironGameObject = PhotonView.Find(ironGameObjectPhotonViewID);
+
+            if (ironGameObject != null)
+            {
+                var ironSpriteRenderer = ironGameObject.GetComponent<SpriteRenderer>();
+
+                baseSteelSprites.Add(ironSpriteRenderer);
+            }
+        }
+
+        StopCoroutine(nameof(DestroyEagleBaseSteelDelayed));
+        StartCoroutine(nameof(DestroyEagleBaseSteelDelayed), baseSteelSprites);
     }
 }

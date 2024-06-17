@@ -16,6 +16,9 @@ EditorBuildSettings:
     path: Assets/TanksBattleCity1985/Scenes/LoadingScene.unity
     guid: 16decfe9c28c1d649ba19925a2c2b563
   - enabled: 1
+    path: Assets/TanksBattleCity1985/Scenes/LobbyScene.unity
+    guid: 451c7b7c35997b04aab94d17cc1b431e
+  - enabled: 1
     path: Assets/TanksBattleCity1985/Scenes/GameScene.unity
     guid: 155202dea62f6784094f6973ccb8f1e0
   - enabled: 1

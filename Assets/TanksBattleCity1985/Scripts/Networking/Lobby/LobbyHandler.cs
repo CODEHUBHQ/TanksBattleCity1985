@@ -73,7 +73,10 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
 
     private void PhotonNetwork_StateChanged(ClientState previousState, ClientState newState)
     {
-        loadingScreen.GetComponentInChildren<TMP_Text>().text = $"{BattleCityUtils.SplitCamelCase($"{newState}")}";
+        if (loadingScreen != null)
+        {
+            loadingScreen.GetComponentInChildren<TMP_Text>().text = $"{BattleCityUtils.SplitCamelCase($"{newState}")}";
+        }
 
         if (newState == ClientState.ConnectedToMasterServer && !isConnectedToMaster)
         {
@@ -253,6 +256,11 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
         }
 
         SetActivePanel(roomListPanel.name);
+    }
+
+    public void SelectionPanelMainMenuButtonOnClick()
+    {
+        PhotonNetwork.Disconnect();
     }
 
     public void CreateRoomPanelCancelButtonOnClick()

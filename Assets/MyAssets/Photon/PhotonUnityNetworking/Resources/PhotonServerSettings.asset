@@ -17,7 +17,7 @@ MonoBehaviour:
     AppIdFusion: 
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 1.0.1
+    AppVersion: 1.1.4
     UseNameServer: 1
     FixedRegion: eu
     Server: 
@@ -46,6 +46,65 @@ MonoBehaviour:
   - LoadMapRPC
   - ParentMapObjects
   - RespawnSpaceship
+  - ParentSpawnedEnemies
+  - PushPositionPunRPC
+  - ResetSpawnedEnemyListPunRPC
+  - ShowPowerUpPunRPC
+  - DestroyGameObjectPunRPC
+  - EnemyWasSpawnedPunRPC
+  - SetShootingPunRPC
+  - ToggleGameIsPausedPunRPC
+  - OnMenuButtonClickedPunRPC
+  - GoToMainMenuPunRPC
+  - ResumeGamePunRPC
+  - ParentSpawnedBullets
+  - ResetPlayersLivesPunRPC
+  - SetPlayerLivesPunRPC
+  - SetGameLevelPunRPC
+  - HidePowerUpPunRPC
+  - OnTriggerEnter2DPunRPC
+  - ParentWallPunRPC
+  - RepairAndUpgradeEagleWallBaseToSteelPunRPC
+  - DestroyByMasterPunRPC
+  - GameOverPunRPC
+  - DestroyAllTanksPunRPC
+  - Parent_WallPunRPC
+  - ParentWallArrayPunRPC
+  - FreezeTimePunRPC
+  - DestroyEagleBaseSteelDelayedPunRPC
+  - FreezePlayerPunRPC
+  - LoadNextMapPunRPC
+  - ResetPlayerPunRPC
+  - UpdatePlayerLevelScorePunRPC
+  - LoadMapDelayedPunRPC
+  - DestroyPunRPC
+  - LoadMapCompletePunRPC
+  - PlayBrickHitSoundPunRPC
+  - PlayIronHitSoundPunRPC
+  - PlayBulletIronHitSoundPunRPC
+  - PlayBulletWallHitSoundPunRPC
+  - PlayEagleDestroySoundPunRPC
+  - PlayGameOverSoundPunRPC
+  - PlayLevelStartingSoundPunRPC
+  - PlayMovingSoundPunRPC
+  - PlayNotMovingSoundPunRPC
+  - PlayPauseSoundPunRPC
+  - PlayPowerUpShowUpSoundPunRPC
+  - PlayPowerUpTakenSoundPunRPC
+  - PlayShotSoundPunRPC
+  - PlayTankDestroySoundPunRPC
+  - StopBulletIronHitSoundPunRPC
+  - StopBulletWallHitSoundPunRPC
+  - StopEagleDestroySoundPunRPC
+  - StopGameOverSoundPunRPC
+  - StopLevelStartingSoundPunRPC
+  - StopMovingSoundPunRPC
+  - StopNotMovingSoundPunRPC
+  - StopPauseSoundPunRPC
+  - StopPowerUpShowUpSoundPunRPC
+  - StopPowerUpTakenSoundPunRPC
+  - StopShotSoundPunRPC
+  - StopTankDestroySoundPunRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

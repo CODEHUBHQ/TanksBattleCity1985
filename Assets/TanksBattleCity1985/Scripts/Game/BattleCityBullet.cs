@@ -11,7 +11,7 @@ public class BattleCityBullet : MonoBehaviour
 
     private Animator animator;
 
-    private Transform shooterTank;
+    [SerializeField] private Transform shooterTank;
 
     private float inputX;
     private float inputY;
@@ -35,7 +35,6 @@ public class BattleCityBullet : MonoBehaviour
         if (GameManager.Instance == null) return;
         if (GameManager.Instance.IsGamePaused()) return;
         if (GameManager.Instance.IsGameOver()) return;
-        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer && !photonView.IsMine) return;
 
         var hit = animator.GetBool(StaticStrings.HIT);
 
@@ -53,7 +52,20 @@ public class BattleCityBullet : MonoBehaviour
             {
                 if (t.gameObject.TryGetComponent(out BattleCityShooting battleCityShooting))
                 {
-                    battleCityShooting.SetShooting(false);
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        var pv = t.GetComponent<PhotonView>();
+                        var photonViewID = pv.ViewID;
+
+                        if (pv.IsOwnerActive && PhotonNetwork.IsConnected)
+                        {
+                            pv.RPC("SetShootingPunRPC", RpcTarget.All, photonViewID);
+                        }
+                    }
+                    else
+                    {
+                        battleCityShooting.SetShooting(false);
+                    }
                 }
             });
         }
@@ -67,7 +79,10 @@ public class BattleCityBullet : MonoBehaviour
         {
             if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
             {
-                photonView.RPC(nameof(DestroyOnTriggerEnter2DRPC), RpcTarget.MasterClient, collision);
+                var otherPhotonViewID = other.GetComponent<PhotonView>().ViewID;
+                var goPhotonViewID = GetComponent<PhotonView>().ViewID;
+
+                photonView.RPC(nameof(DestroyOnTriggerEnter2DRPC), RpcTarget.MasterClient, otherPhotonViewID, goPhotonViewID);
             }
             else
             {
@@ -82,7 +97,9 @@ public class BattleCityBullet : MonoBehaviour
     {
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            photonView.RPC(nameof(DestroyAfterAnimationFinishesRPC), RpcTarget.MasterClient);
+            var photonViewID = photonView.ViewID;
+
+            photonView.RPC(nameof(DestroyAfterAnimationFinishesRPC), RpcTarget.MasterClient, photonViewID);
         }
         else
         {
@@ -117,19 +134,30 @@ public class BattleCityBullet : MonoBehaviour
     }
 
     [PunRPC]
-    public void DestroyAfterAnimationFinishesRPC()
+    public void DestroyAfterAnimationFinishesRPC(int photonViewID)
     {
-        PhotonNetwork.Destroy(gameObject);
+        var go = PhotonView.Find(photonViewID);
+
+        if (go != null)
+        {
+            PhotonNetwork.Destroy(go.gameObject);
+        }
     }
 
     [PunRPC]
-    public void DestroyOnTriggerEnter2DRPC(Collider2D collision)
+    public void DestroyOnTriggerEnter2DRPC(int otherPhotonViewID, int goPhotonViewID)
     {
-        Debug.Log($"DestroyOnTriggerEnter2DRPC collision: {collision}");
+        var otherGameObject = PhotonView.Find(otherPhotonViewID);
+        var go = PhotonView.Find(goPhotonViewID);
 
-        var other = collision.GetComponent<Transform>();
+        if (go != null)
+        {
+            PhotonNetwork.Destroy(go.gameObject);
+        }
 
-        PhotonNetwork.Destroy(gameObject);
-        PhotonNetwork.Destroy(other.gameObject);
+        if (otherGameObject != null)
+        {
+            PhotonNetwork.Destroy(otherGameObject.gameObject);
+        }
     }
 }

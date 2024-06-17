@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public static class BattleCityUtils
 {
@@ -95,11 +96,101 @@ public static class BattleCityUtils
         if (string.IsNullOrEmpty(filename) || sprite == null) return;
 
         var bytes = sprite.texture.EncodeToPNG();
-        var file = File.Open($"{Application.streamingAssetsPath}/MapsImgs/{filename}", FileMode.Create);
+        var file = File.Open($"Assets/TanksBattleCity1985/UI/MapsImgs/{filename}", FileMode.Create);
         var binary = new BinaryWriter(file);
 
         binary.Write(bytes);
 
         file.Close();
+    }
+
+    public static bool GetMouseButtonDown()
+    {
+        var touches = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+
+        if (touches.Count > 0)
+        {
+            var touch = touches[0];
+
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        return Mouse.current.leftButton.wasPressedThisFrame; // equivalent to Input.GetMouseButtonDown(0)
+    }
+
+    public static bool GetMouseButton()
+    {
+        var touches = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+
+        if (touches.Count > 0)
+        {
+            var touch = touches[0];
+
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        return Mouse.current.leftButton.isPressed; // equivalent to Input.GetMouseButton(0)
+    }
+
+    public static bool GetMouseButtonStationary()
+    {
+        var touches = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+
+        if (touches.Count > 0)
+        {
+            var touch = touches[0];
+
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        return Mouse.current.leftButton.isPressed; // equivalent to Input.GetMouseButton(0)
+    }
+
+    public static bool GetMouseButtonUp()
+    {
+        var touches = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+
+        if (touches.Count > 0)
+        {
+            var touch = touches[0];
+
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        return Mouse.current.leftButton.wasReleasedThisFrame; // equivalent to Input.GetMouseButtonUp(0)
+    }
+
+    public static Vector2 GetMousePosition()
+    {
+        var touches = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+
+        if (touches.Count > 0)
+        {
+            var touch = touches[0];
+
+            return touch.screenPosition;
+        }
+
+        return Mouse.current.position.ReadValue(); // equivalent to Input.mousePosition
     }
 }

@@ -139,7 +139,7 @@ public class BattleCityPlayerMovement : MonoBehaviour
 
     private void ApplyMovementSound()
     {
-        if (battleCityPlayer.LocalPlayerActorNumber == 0)
+        if (battleCityPlayer.LocalPlayerActorNumber == 0 || battleCityPlayer.LocalPlayerActorNumber == 1)
         {
             // Sounds moving and not moving
             if (IsSomethingPressed() && !SoundManager.Instance.IsMovingSoundPlaying())

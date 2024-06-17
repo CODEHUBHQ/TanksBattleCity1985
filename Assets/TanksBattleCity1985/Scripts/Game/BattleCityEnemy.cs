@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,13 @@ public class BattleCityEnemy : MonoBehaviour
         if (GameManager.Instance == null) return;
         if (GameManager.Instance.IsGamePaused()) return;
         if (GameManager.Instance.IsGameOver()) return;
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+        }
 
         animator.SetFloat(StaticStrings.INPUT_X, inputX);
         animator.SetFloat(StaticStrings.INPUT_Y, inputY);
@@ -55,6 +63,13 @@ public class BattleCityEnemy : MonoBehaviour
         if (GameManager.Instance == null) return;
         if (GameManager.Instance.IsGamePaused()) return;
         if (GameManager.Instance.IsGameOver()) return;
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+        }
 
         if (!isFreezed && !animator.GetBool(StaticStrings.HIT))
         {
@@ -94,6 +109,14 @@ public class BattleCityEnemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+        }
+
         if (transform.position.y < -11.5f && inputY < 0 || transform.position.y > 11.5f && inputY > 0)
         {
             inputX = random.Next(50) % 3 - 1;

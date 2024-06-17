@@ -18,13 +18,12 @@ public class RewardedAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     private void Awake()
     {
         Instance = this;
-
-        DontDestroyOnLoad(this);
     }
 
     // Call this public method when you want to get an ad ready to show.
     public void LoadAd(Action onAddLoaded = null)
     {
+#if !UNITY_STANDALONE
         this.onAddLoaded = onAddLoaded;
 
         // Get the Ad Unit ID for the current platform:
@@ -37,6 +36,7 @@ public class RewardedAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
         // IMPORTANT! Only load content AFTER initialization (in this example, initialization is handled in a different script).
         Debug.Log("Loading Ad: " + adUnitId);
         Advertisement.Load(adUnitId, this);
+#endif
     }
 
     // If the ad successfully loads, add a listener to the button and enable it:
@@ -60,11 +60,13 @@ public class RewardedAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowLi
     // Implement a method to execute when the user clicks the button:
     public void ShowAd(Action onAddComplete = null)
     {
+#if !UNITY_STANDALONE
         this.onAddComplete = onAddComplete;
 
         // Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing Ad: " + adUnitId);
         Advertisement.Show(adUnitId, this);
+#endif
     }
 
     // Implement the Show Listener's OnUnityAdsShowComplete callback method to determine if the user gets a reward:

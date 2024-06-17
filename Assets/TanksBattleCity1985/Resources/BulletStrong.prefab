@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1815649031601740047}
   - component: {fileID: 9027234556488160650}
   - component: {fileID: 1883412033140965660}
-  - component: {fileID: 2513994285411521664}
   - component: {fileID: 2369443590572800974}
   - component: {fileID: 5781809974670037986}
   - component: {fileID: 5541988520341614570}
@@ -63,7 +62,6 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 9027234556488160650}
   - {fileID: 1883412033140965660}
-  - {fileID: 2513994285411521664}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -99,33 +97,17 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 1
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: input_x
   - Type: 1
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: input_y
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: hit
   m_SynchronizeLayers:
-  - SynchronizeType: 2
+  - SynchronizeType: 1
     LayerIndex: 0
---- !u!114 &2513994285411521664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8481930454331429837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 0
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
 --- !u!212 &2369443590572800974
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -143,9 +125,6 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -183,7 +162,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &5781809974670037986
 Animator:
-  serializedVersion: 7
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -197,7 +176,6 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -211,7 +189,6 @@ BoxCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8481930454331429837}
   m_Enabled: 1
-  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -235,8 +212,7 @@ BoxCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,6 +223,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
+  serializedVersion: 2
   m_Size: {x: 1, y: 0.75}
   m_EdgeRadius: 0
 --- !u!50 &7505426067469149274
@@ -289,6 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.5
+  shooterTank: {fileID: 0}
 --- !u!114 &4242033525527556357
 MonoBehaviour:
   m_ObjectHideFlags: 0

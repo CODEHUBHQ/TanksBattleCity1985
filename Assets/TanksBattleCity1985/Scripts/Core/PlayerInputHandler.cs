@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private Joystick joystickStick;
     [SerializeField] private Joystick joystickDpad;
     [SerializeField] private GameObject movementButtons;
+    [SerializeField] private GameObject shootButton;
 
     private Vector2 inputVector;
 
@@ -23,10 +25,17 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        joystickStick = GameObject.Find("UICanvas").transform.Find("JoystickController").Find("Variable Joystick").GetComponent<Joystick>();
+        joystickDpad = GameObject.Find("UICanvas").transform.Find("JoystickController").Find("Variable Joystick DPad").GetComponent<Joystick>();
+        movementButtons = GameObject.Find("UICanvas").transform.Find("JoystickController").Find("MovementButtons").gameObject;
+        shootButton = GameObject.Find("UICanvas").transform.Find("JoystickController").Find("ShootButton").gameObject;
     }
 
     private void Start()
     {
+        shootButton.gameObject.SetActive(true);
+
         var joystickType = int.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "0"));
 
         if (joystickType == 0)
@@ -112,6 +121,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void RumblePulse(int playerInputIndex, float lowFrequency = 0.25f, float highFrequency = 0.5f, float duration = 0.5f)
     {
+#if UNITY_ANDROID || UNITY_IOS
         Handheld.Vibrate();
+#endif
     }
 }

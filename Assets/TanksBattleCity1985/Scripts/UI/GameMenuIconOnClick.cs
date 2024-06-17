@@ -1,18 +1,33 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameMenuIconOnClick : MonoBehaviour
 {
+    private PhotonView photonView;
+
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+    }
+
     public void OnMenuButtonClicked()
     {
-        if (!GameManager.Instance.IsGamePaused())
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            SoundManager.Instance.PlayPauseSound();
+            photonView.RPC(nameof(OnMenuButtonClickedPunRPC), RpcTarget.All);
         }
+        else
+        {
+            if (!GameManager.Instance.IsGamePaused())
+            {
+                SoundManager.Instance.PlayPauseSound();
+            }
 
-        GameManager.Instance.ToggleGameIsPaused();
-        GameMenuUI.Instance.ToggleGameMenu();
+            GameManager.Instance.ToggleGameIsPaused();
+            GameMenuUI.Instance.ToggleGameMenu();
+        }
     }
 
     public void Show()
@@ -23,5 +38,17 @@ public class GameMenuIconOnClick : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    [PunRPC]
+    public void OnMenuButtonClickedPunRPC()
+    {
+        if (!GameManager.Instance.IsGamePaused())
+        {
+            SoundManager.Instance.PlayPauseSound();
+        }
+
+        GameManager.Instance.ToggleGameIsPaused();
+        GameMenuUI.Instance.ToggleGameMenu();
     }
 }

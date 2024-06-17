@@ -88,11 +88,14 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
             // The tyniest piece of wall left
             if (curr.IsIn(1, 3, 7, 9))
             {
-                //if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
-                //{
-                //    PhotonNetwork.Destroy(t.gameObject);
-                //}
-                //else
+                if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(t.gameObject);
+                    }
+                }
+                else
                 {
                     Destroy(t.gameObject);
                 }
@@ -114,11 +117,14 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
 
                 if (curr.IsIn(2, 8))
                 {
-                    //if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
-                    //{
-                    //    PhotonNetwork.Destroy(t.gameObject);
-                    //}
-                    //else
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            PhotonNetwork.Destroy(t.gameObject);
+                        }
+                    }
+                    else
                     {
                         Destroy(t.gameObject);
                     }
@@ -145,11 +151,14 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
 
                 if (curr.IsIn(4, 6))
                 {
-                    //if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
-                    //{
-                    //    PhotonNetwork.Destroy(t.gameObject);
-                    //}
-                    //else
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            PhotonNetwork.Destroy(t.gameObject);
+                        }
+                    }
+                    else
                     {
                         Destroy(t.gameObject);
                     }

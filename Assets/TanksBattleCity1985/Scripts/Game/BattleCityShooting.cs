@@ -17,7 +17,7 @@ public class BattleCityShooting : MonoBehaviour
     private BattleCityPlayer battleCityPlayer;
     private BattleCityEnemy battleCityEnemy;
 
-    private int alreadyShot = 0;
+    [SerializeField] private int alreadyShot = 0;
     private int maxBulletsAtOneTime = 1;
 
     private void Awake()
@@ -209,15 +209,28 @@ public class BattleCityShooting : MonoBehaviour
 
             this.DoAfter(1f, () =>
             {
-                Destroy(gameObject);
+                if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(gameObject);
+                    }
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             });
         }
         else if (!isNPC)
         {
+            transform.GetComponent<BoxCollider2D>().enabled = false;
             transform.position = new Vector3(120, 20, 0);
 
             if (transform.TryGetComponent(out BattleCityPlayer battleCityPlayer))
             {
+                battleCityPlayer.SetIsHit(false);
+
                 if (SoundManager.Instance.IsVibrateEnabled())
                 {
                     PlayerInputHandler.Instance.RumblePulse(battleCityPlayer.LocalPlayerActorNumber);
@@ -229,6 +242,8 @@ public class BattleCityShooting : MonoBehaviour
 
                 if (lives <= 0)
                 {
+                    transform.GetComponent<BattleCityPlayer>().SetLives(0);
+
                     var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
 
                     var allLives = 0;
@@ -243,9 +258,16 @@ public class BattleCityShooting : MonoBehaviour
 
                     if (allLives == 0)
                     {
-                        GameManager.Instance.SetIsGameOver(true);
+                        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                        {
+                            photonView.RPC(nameof(GameOverPunRPC), RpcTarget.All);
+                        }
+                        else
+                        {
+                            GameManager.Instance.SetIsGameOver(true);
 
-                        StartCoroutine(FinishGameAfter(3f));
+                            StartCoroutine(FinishGameAfter(3f));
+                        }
                     }
                 }
                 else
@@ -257,6 +279,7 @@ public class BattleCityShooting : MonoBehaviour
                             battleCityPlayerMovement.ResetPosition();
                         }
 
+                        transform.GetComponent<BoxCollider2D>().enabled = true;
                         transform.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
 
                         alreadyShot = 0;
@@ -282,11 +305,21 @@ public class BattleCityShooting : MonoBehaviour
     }
 
     [PunRPC]
+    public void GameOverPunRPC()
+    {
+        GameManager.Instance.SetIsGameOver(true);
+
+        StartCoroutine(FinishGameAfter(3f));
+    }
+
+    [PunRPC]
     public void LaunchBulletByMasterRPC(string bulletName, Vector3 pos, Quaternion rotation, float r, float x, float y)
     {
-        var newBullet = PhotonNetwork.InstantiateRoomObject(bulletName, pos, rotation, 0);
+        var newBullet = PhotonNetwork.Instantiate(bulletName, pos, rotation, 0);
+        var newBulletPhotonViewID = newBullet.GetComponent<PhotonView>().ViewID;
 
-        newBullet.transform.parent = BattleCityMapLoad.Instance.GeneratedBulletContainer;
+        photonView.RPC(nameof(ParentSpawnedBullets), RpcTarget.All, newBulletPhotonViewID);
+
         newBullet.transform.eulerAngles += new Vector3(0, 0, r);
 
         // Passes variables x and y
@@ -298,14 +331,31 @@ public class BattleCityShooting : MonoBehaviour
         if (newBulletAnimator.TryGetComponent(out BattleCityBullet battleCityBullet))
         {
             battleCityBullet.SetShooterTank(transform);
-
-            photonView.RPC(nameof(LaunchBulletRPC), RpcTarget.Others, battleCityBullet);
         }
     }
 
     [PunRPC]
-    public void LaunchBulletRPC(BattleCityBullet battleCityBullet)
+    public void ParentSpawnedBullets(int newBulletPhotonViewID)
     {
-        battleCityBullet.SetShooterTank(GameManager.Instance.PlayerOne.transform);
+        var newBulletGameObject = PhotonView.Find(newBulletPhotonViewID);
+
+        if (newBulletGameObject != null)
+        {
+            newBulletGameObject.transform.parent = BattleCityMapLoad.Instance.GeneratedBulletContainer;
+        }
+    }
+
+    [PunRPC]
+    public void SetShootingPunRPC(int photonViewID)
+    {
+        var go = PhotonView.Find(photonViewID);
+
+        if (go != null)
+        {
+            if (go.gameObject.TryGetComponent(out BattleCityShooting battleCityShooting))
+            {
+                battleCityShooting.SetShooting(false);
+            }
+        }
     }
 }

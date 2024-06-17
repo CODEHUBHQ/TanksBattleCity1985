@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,6 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
         Transform tank = collision.GetComponent<Transform>();
         Animator tankAnim = collision.GetComponent<Animator>();
 
-
         // Show power up if was red
         if (tank.name.Contains("Tank") && isFriendly && !bulletAnim.GetBool(StaticStrings.HIT) && !tankAnim.GetBool(StaticStrings.HIT))
         {
@@ -28,10 +28,20 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
         {
             if (collision.TryGetComponent(out BattleCityPlayer battleCityPlayer))
             {
-                battleCityPlayer.FreezePlayer();
+                battleCityPlayer.FreezePlayer(battleCityPlayer);
             }
 
-            Destroy(gameObject);
+            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.Destroy(gameObject);
+                }
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
 
             SoundManager.Instance.PlayBulletIronHitSound();
         }
@@ -48,7 +58,8 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
                 if (tank.name.Contains("Player"))
                 {
                     tank.GetComponent<BattleCityPlayer>().Hit();
-
+                    tank.GetComponent<BoxCollider2D>().enabled = false;
+                    
                     tankAnim.SetBool(StaticStrings.HIT, true);
 
                     SoundManager.Instance.PlayTankDestroySound();
@@ -60,9 +71,21 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
 
                     tankAnim.SetBool(StaticStrings.HIT, true);
 
-                    if (GetComponent<BattleCityBullet>().GetShooterTank().TryGetComponent(out BattleCityPlayer battleCityPlayer))
+                    if (GetComponent<BattleCityBullet>().GetShooterTank() != null)
                     {
-                        battleCityPlayer.UpdatePlayerLevelScore(battleCityEnemy.GetHitPTS());
+                        if (GetComponent<BattleCityBullet>().GetShooterTank().TryGetComponent(out BattleCityPlayer battleCityPlayer))
+                        {
+                            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                            {
+                                var battleCityPlayerPV = battleCityPlayer.GetComponent<PhotonView>();
+
+                                battleCityPlayer.UpdatePlayerLevelScore(battleCityEnemy.GetHitPTS(), battleCityPlayerPV.OwnerActorNr);
+                            }
+                            else
+                            {
+                                battleCityPlayer.UpdatePlayerLevelScore(battleCityEnemy.GetHitPTS());
+                            }
+                        }
                     }
 
                     SoundManager.Instance.PlayTankDestroySound();

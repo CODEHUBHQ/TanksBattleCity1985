@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PowerUpsPanel : MonoBehaviour
 {
@@ -12,8 +13,12 @@ public class PowerUpsPanel : MonoBehaviour
     [SerializeField] private Button healthPowerUpButton;
     [SerializeField] private Button shovelPowerUpButton;
 
+    private PhotonView photonView;
+
     private void Awake()
     {
+        photonView = GetComponent<PhotonView>();
+
         levelPowerUpButton.onClick.AddListener(() =>
         {
             if (HasBalance())
@@ -105,11 +110,23 @@ public class PowerUpsPanel : MonoBehaviour
 
         CoinsManager.Instance.UpdateCoinsText();
 
-        BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(ShowPowerUpPunRPC), RpcTarget.All, powerUp);
+        }
+        else
+        {
+            BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
+        }
     }
 
     private void ShowPowerUpAd(int powerUp)
     {
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            return;
+        }
+
         GameManager.Instance.ToggleGameIsPaused();
 
         RewardedAds.Instance.LoadAd(() =>
@@ -121,5 +138,11 @@ public class PowerUpsPanel : MonoBehaviour
                 BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
             });
         });
+    }
+
+    [PunRPC]
+    public void ShowPowerUpPunRPC(int powerUp)
+    {
+        BattleCityPowerUp.Instance.ShowPowerUp(powerUp);
     }
 }

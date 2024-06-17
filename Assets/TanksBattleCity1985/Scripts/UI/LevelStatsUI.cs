@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,7 +82,8 @@ public class LevelStatsUI : MonoBehaviour
         onePlayerStatsBackground.SetActive(true);
         playerOneStats.SetActive(true);
 
-        playerOneLevelScoreText.text = $"{GameManager.Instance.PlayerOne.GetTotalLevelScore()}";
+        //playerOneLevelScoreText.text = $"{GameManager.Instance.PlayerOne.GetTotalLevelScore()}";
+        playerOneLevelScoreText.text = $"{GameManager.Instance.GetPlayerOneStats()[4]}";
 
         if (isMultiplayer)
         {
@@ -89,22 +91,27 @@ public class LevelStatsUI : MonoBehaviour
             twoPlayerStatsBackground.SetActive(true);
             playerTwoStats.SetActive(true);
 
-            playerTwoLevelScoreText.text = $"{GameManager.Instance.PlayerTwo.GetTotalLevelScore()}";
+            //playerTwoLevelScoreText.text = $"{GameManager.Instance.PlayerOne.GetTotalLevelScore()}";
+            playerTwoLevelScoreText.text = $"{GameManager.Instance.GetPlayerTwoStats()[4]}";
         }
 
         SoundManager.Instance.PlayScoreSound();
 
-        if (GameManager.Instance.PlayerOne.GetEasyTanksKilled() > 1)
+        if (GameManager.Instance.GetPlayerOneStats()[0] > 1 || GameManager.Instance.GetPlayerTwoStats()[0] > 1)
         {
             var easyTankPTS = 100;
 
-            var playerOneEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerOneText, easyTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetEasyTanksKilled(), easyTankPTS));
+            Coroutine playerOneEasyTanksStats = null;
+
+            //playerOneEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerOneText, easyTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetEasyTanksKilled(), easyTankPTS));
+            playerOneEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerOneText, easyTankPTSCountPlayerOneText, GameManager.Instance.GetPlayerOneStats()[0], easyTankPTS));
 
             Coroutine playerTwoEasyTanksStats = null;
 
             if (isMultiplayer)
             {
-                playerTwoEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerTwoText, easyTankPTSCountPlayerTwoText, GameManager.Instance.PlayerTwo.GetEasyTanksKilled(), easyTankPTS));
+                //playerTwoEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerTwoText, easyTankPTSCountPlayerTwoText, GameManager.Instance.PlayerOne.GetEasyTanksKilled(), easyTankPTS));
+                playerTwoEasyTanksStats = StartCoroutine(AnimatePlayerLevelStats(easyTankKillCountPlayerTwoText, easyTankPTSCountPlayerTwoText, GameManager.Instance.GetPlayerTwoStats()[0], easyTankPTS));
             }
 
             if (isMultiplayer)
@@ -119,27 +126,35 @@ public class LevelStatsUI : MonoBehaviour
         }
         else
         {
-            easyTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled()}";
-            easyTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled() * 100}";
+            //easyTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled()}";
+            //easyTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled() * 100}";
+            easyTankKillCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[0]}";
+            easyTankPTSCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[0] * 100}";
 
             if (isMultiplayer)
             {
-                easyTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetEasyTanksKilled()}";
-                easyTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetEasyTanksKilled() * 100}";
+                //easyTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled()}";
+                //easyTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetEasyTanksKilled() * 100}";
+                easyTankKillCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[0]}";
+                easyTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[0] * 100}";
             }
         }
 
-        if (GameManager.Instance.PlayerOne.GetFastTanksKilled() > 1)
+        if (GameManager.Instance.GetPlayerOneStats()[1] > 1 || GameManager.Instance.GetPlayerTwoStats()[1] > 1)
         {
             var fastTankPTS = 200;
 
-            var playerOneFastTanksStats = StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerOneText, fastTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetFastTanksKilled(), fastTankPTS));
+            Coroutine playerOneFastTanksStats = null;
+
+            //playerOneFastTanksStats = StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerOneText, fastTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetFastTanksKilled(), fastTankPTS));
+            playerOneFastTanksStats = StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerOneText, fastTankPTSCountPlayerOneText, GameManager.Instance.GetPlayerOneStats()[1], fastTankPTS));
 
             Coroutine playerTwoFastTanksStats = null;
 
             if (isMultiplayer)
             {
-                StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerTwoText, fastTankPTSCountPlayerTwoText, GameManager.Instance.PlayerTwo.GetFastTanksKilled(), fastTankPTS));
+                //playerTwoFastTanksStats = StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerTwoText, fastTankPTSCountPlayerTwoText, GameManager.Instance.PlayerOne.GetFastTanksKilled(), fastTankPTS));
+                playerTwoFastTanksStats = StartCoroutine(AnimatePlayerLevelStats(fastTankKillCountPlayerTwoText, fastTankPTSCountPlayerTwoText, GameManager.Instance.GetPlayerTwoStats()[1], fastTankPTS));
             }
 
             if (isMultiplayer)
@@ -154,27 +169,36 @@ public class LevelStatsUI : MonoBehaviour
         }
         else
         {
-            fastTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled()}";
-            fastTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled() * 200}";
+            //fastTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled()}";
+            //fastTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled() * 200}";
+            fastTankKillCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[1]}";
+            fastTankPTSCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[1] * 200}";
 
             if (isMultiplayer)
             {
-                fastTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetFastTanksKilled()}";
-                fastTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetFastTanksKilled() * 200}";
+                //fastTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled()}";
+                //fastTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetFastTanksKilled() * 200}";
+                fastTankKillCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[1]}";
+                fastTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[1] * 200}";
             }
         }
 
-        if (GameManager.Instance.PlayerOne.GetMediumTanksKilled() > 1)
+        if (GameManager.Instance.GetPlayerOneStats()[2] > 1 || GameManager.Instance.GetPlayerTwoStats()[2] > 1)
         {
             var mediumTankPTS = 300;
 
-            var playerOneMediumTanksStats = StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerOneText, mediumTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetMediumTanksKilled(), mediumTankPTS));
+            Coroutine playerOneMediumTanksStats = null;
+
+            //playerOneMediumTanksStats = StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerOneText, mediumTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetMediumTanksKilled(), mediumTankPTS));
+
+            playerOneMediumTanksStats = StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerOneText, mediumTankPTSCountPlayerOneText, GameManager.Instance.GetPlayerOneStats()[2], mediumTankPTS));
 
             Coroutine playerTwoMediumTanksStats = null;
 
             if (isMultiplayer)
             {
-                StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerTwoText, mediumTankPTSCountPlayerTwoText, GameManager.Instance.PlayerTwo.GetMediumTanksKilled(), mediumTankPTS));
+                //playerTwoMediumTanksStats = StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerTwoText, mediumTankPTSCountPlayerTwoText, GameManager.Instance.PlayerOne.GetMediumTanksKilled(), mediumTankPTS));
+                playerTwoMediumTanksStats = StartCoroutine(AnimatePlayerLevelStats(mediumTankKillCountPlayerTwoText, mediumTankPTSCountPlayerTwoText, GameManager.Instance.GetPlayerTwoStats()[2], mediumTankPTS));
             }
 
             if (isMultiplayer)
@@ -189,28 +213,36 @@ public class LevelStatsUI : MonoBehaviour
         }
         else
         {
-            mediumTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled()}";
-            mediumTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled() * 300}";
+            //mediumTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled()}";
+            //mediumTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled() * 300}";
+            mediumTankKillCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[2]}";
+            mediumTankPTSCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[2] * 300}";
 
             if (isMultiplayer)
             {
-                mediumTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetMediumTanksKilled()}";
-                mediumTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetMediumTanksKilled() * 300}";
+                //mediumTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled()}";
+                //mediumTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetMediumTanksKilled() * 300}";
+                mediumTankKillCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[2]}";
+                mediumTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[2] * 300}";
             }
         }
 
 
-        if (GameManager.Instance.PlayerOne.GetStrongTanksKilled() > 1)
+        if (GameManager.Instance.GetPlayerOneStats()[3] > 1 || GameManager.Instance.GetPlayerTwoStats()[3] > 1)
         {
             var strongTankPTS = 400;
 
-            var playerOneStrongTanksStats = StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerOneText, strongTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetStrongTanksKilled(), strongTankPTS));
+            Coroutine playerOneStrongTanksStats = null;
+
+            //playerOneStrongTanksStats = StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerOneText, strongTankPTSCountPlayerOneText, GameManager.Instance.PlayerOne.GetStrongTanksKilled(), strongTankPTS));
+            playerOneStrongTanksStats = StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerOneText, strongTankPTSCountPlayerOneText, GameManager.Instance.GetPlayerOneStats()[3], strongTankPTS));
 
             Coroutine playerTwoStrongTanksStats = null;
 
             if (isMultiplayer)
             {
-                StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerTwoText, strongTankPTSCountPlayerTwoText, GameManager.Instance.PlayerTwo.GetStrongTanksKilled(), strongTankPTS));
+                //playerTwoStrongTanksStats = StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerTwoText, strongTankPTSCountPlayerTwoText, GameManager.Instance.PlayerOne.GetStrongTanksKilled(), strongTankPTS));
+                playerTwoStrongTanksStats = StartCoroutine(AnimatePlayerLevelStats(strongTankKillCountPlayerTwoText, strongTankPTSCountPlayerTwoText, GameManager.Instance.GetPlayerTwoStats()[3], strongTankPTS));
             }
 
             if (isMultiplayer)
@@ -225,20 +257,30 @@ public class LevelStatsUI : MonoBehaviour
         }
         else
         {
-            strongTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled()}";
-            strongTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled() * 400}";
+            //strongTankKillCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled()}";
+            //strongTankPTSCountPlayerOneText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled() * 400}";
+            strongTankKillCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[3]}";
+            strongTankPTSCountPlayerOneText.text = $"{GameManager.Instance.GetPlayerOneStats()[3] * 400}";
 
             if (isMultiplayer)
             {
-                strongTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetStrongTanksKilled()}";
-                strongTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerTwo.GetStrongTanksKilled() * 400}";
+                //strongTankKillCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled()}";
+                //strongTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.PlayerOne.GetStrongTanksKilled() * 400}";
+                strongTankKillCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[3]}";
+                strongTankPTSCountPlayerTwoText.text = $"{GameManager.Instance.GetPlayerTwoStats()[3] * 400}";
             }
         }
 
-        var playerOneTotalTanksKilled = GameManager.Instance.PlayerOne.GetEasyTanksKilled() +
-                                        GameManager.Instance.PlayerOne.GetFastTanksKilled() +
-                                        GameManager.Instance.PlayerOne.GetMediumTanksKilled() +
-                                        GameManager.Instance.PlayerOne.GetStrongTanksKilled();
+        var playerOneTotalTanksKilled = 0;
+
+        //playerOneTotalTanksKilled = GameManager.Instance.PlayerOne.GetEasyTanksKilled() +
+        //                            GameManager.Instance.PlayerOne.GetFastTanksKilled() +
+        //                            GameManager.Instance.PlayerOne.GetMediumTanksKilled() +
+        //                            GameManager.Instance.PlayerOne.GetStrongTanksKilled();
+        playerOneTotalTanksKilled = GameManager.Instance.GetPlayerOneStats()[0] +
+                                    GameManager.Instance.GetPlayerOneStats()[1] +
+                                    GameManager.Instance.GetPlayerOneStats()[2] +
+                                    GameManager.Instance.GetPlayerOneStats()[3];
 
         SoundManager.Instance.PlayScorePulseSound();
 
@@ -246,10 +288,16 @@ public class LevelStatsUI : MonoBehaviour
 
         if (isMultiplayer)
         {
-            var playerTwoTotalTanksKilled = GameManager.Instance.PlayerTwo.GetEasyTanksKilled() +
-                                        GameManager.Instance.PlayerTwo.GetFastTanksKilled() +
-                                        GameManager.Instance.PlayerTwo.GetMediumTanksKilled() +
-                                        GameManager.Instance.PlayerTwo.GetStrongTanksKilled();
+            var playerTwoTotalTanksKilled = 0;
+
+            //playerTwoTotalTanksKilled = GameManager.Instance.PlayerOne.GetEasyTanksKilled() +
+            //                            GameManager.Instance.PlayerOne.GetFastTanksKilled() +
+            //                            GameManager.Instance.PlayerOne.GetMediumTanksKilled() +
+            //                            GameManager.Instance.PlayerOne.GetStrongTanksKilled();
+            playerTwoTotalTanksKilled = GameManager.Instance.GetPlayerTwoStats()[0] +
+                                        GameManager.Instance.GetPlayerTwoStats()[1] +
+                                        GameManager.Instance.GetPlayerTwoStats()[2] +
+                                        GameManager.Instance.GetPlayerTwoStats()[3];
 
             playerTwoTotalKillCountText.text = $"{playerTwoTotalTanksKilled}";
         }

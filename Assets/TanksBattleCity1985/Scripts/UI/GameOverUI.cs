@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,15 @@ public class GameOverUI : MonoBehaviour
         }
         else
         {
-            LoadingManager.LoadScene(LoadingManager.Scene.MenuScene);
+            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer && PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.LeaveRoom();
+            }
+            else
+            {
+                LoadingManager.LoadScene(LoadingManager.Scene.MenuScene);
+            }
+
 
             //BattleCityMapLoad.Instance.LoadMap(1);
 

@@ -1,6 +1,8 @@
 using Photon.Pun;
+using Photon.Pun.Demo.SlotRacer.Utils;
 using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     public static GameManager Instance { get; private set; }
 
@@ -32,22 +34,29 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [SerializeField] private TMP_Text waitingForAllPlayersText;
 
+    [SerializeField] private GameObject playerInputManagerPrefab;
+
     private BattleCityPlayer playerOne;
     private BattleCityPlayer playerTwo;
 
     private bool isGamePaused;
     private bool isGameOver;
 
+    private int[] playerOneStats = new int[5];
+    private int[] playerTwoStats = new int[5];
+
     private void Awake()
     {
         Instance = this;
 
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 59;
+        QualitySettings.vSyncCount = 0;
 
-        if (NetworkManager.Instance == null || NetworkManager.Instance.GameMode != GameMode.Multiplayer)
-        {
-            GetComponent<CountdownTimer>().enabled = false;
-        }
+        GetComponent<CountdownTimer>().enabled = false;
+        //if (NetworkManager.Instance == null || NetworkManager.Instance.GameMode != GameMode.Multiplayer)
+        //{
+        //    GetComponent<CountdownTimer>().enabled = false;
+        //}
     }
 
     private void Start()
@@ -55,27 +64,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         ToggleGameIsPaused();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            BattleCityPowerUp.Instance.ShowPowerUp(4);
-        }
-    }
+    //public override void OnEnable()
+    //{
+    //    base.OnEnable();
 
-    public override void OnEnable()
-    {
-        base.OnEnable();
+    //    CountdownTimer.OnCountdownTimerHasExpired += OnCountdownTimerIsExpired;
+    //}
 
-        CountdownTimer.OnCountdownTimerHasExpired += OnCountdownTimerIsExpired;
-    }
+    //public override void OnDisable()
+    //{
+    //    base.OnDisable();
 
-    public override void OnDisable()
-    {
-        base.OnDisable();
-
-        CountdownTimer.OnCountdownTimerHasExpired -= OnCountdownTimerIsExpired;
-    }
+    //    CountdownTimer.OnCountdownTimerHasExpired -= OnCountdownTimerIsExpired;
+    //}
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
@@ -96,7 +97,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (changedProps.ContainsKey(StaticStrings.PLAYER_LIVES))
         {
-            Debug.Log($"TODO: Player Lives changed!");
+            BattleCityEagle.Instance.SetPlayerLives(targetPlayer.ActorNumber - 1, (int)changedProps[StaticStrings.PLAYER_LIVES]);
+
+            return;
+        }
+
+        if (changedProps.ContainsKey(StaticStrings.PLAYER_LOADED_LEVEL))
+        {
+            BattleCityEagle.Instance.SetGameLevel((int)changedProps[StaticStrings.PLAYER_LOADED_LEVEL]);
 
             return;
         }
@@ -107,53 +115,53 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         // if there was no countdown yet, the master client (this one) waits until everyone loaded the level and sets a timer start
-        var startTimeIsSet = CountdownTimer.TryGetStartTime(out int startTimestamp);
+        //var startTimeIsSet = CountdownTimer.TryGetStartTime(out int startTimestamp);
 
-        if (changedProps.ContainsKey(StaticStrings.PLAYER_LOADED_LEVEL))
-        {
-            if (CheckAllPlayerLoadedLevel())
-            {
-                if (!startTimeIsSet)
-                {
-                    CountdownTimer.SetStartTime();
-                }
-            }
-            else
-            {
-                if (waitingForAllPlayersText != null)
-                {
-                    // not all players loaded yet. wait:
-                    Debug.Log("setting text waiting for players!");
-                    waitingForAllPlayersText.text = "Waiting for other players...";
-                }
-            }
-        }
+        //if (changedProps.ContainsKey(StaticStrings.PLAYER_LOADED_LEVEL))
+        //{
+        //    if (CheckAllPlayerLoadedLevel())
+        //    {
+        //        if (!startTimeIsSet)
+        //        {
+        //            CountdownTimer.SetStartTime();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (waitingForAllPlayersText != null)
+        //        {
+        //            // not all players loaded yet. wait:
+        //            Debug.Log("setting text waiting for players!");
+        //            waitingForAllPlayersText.text = "Waiting for other players...";
+        //        }
+        //    }
+        //}
     }
 
-    private bool CheckAllPlayerLoadedLevel()
-    {
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            if (player.CustomProperties.TryGetValue(StaticStrings.PLAYER_LOADED_LEVEL, out object playerLoadedLevel))
-            {
-                if ((bool)playerLoadedLevel)
-                {
-                    continue;
-                }
-            }
+    //private bool CheckAllPlayerLoadedLevel()
+    //{
+    //    foreach (var player in PhotonNetwork.PlayerList)
+    //    {
+    //        if (player.CustomProperties.TryGetValue(StaticStrings.PLAYER_LOADED_LEVEL, out object playerLoadedLevel))
+    //        {
+    //            if ((bool)playerLoadedLevel)
+    //            {
+    //                continue;
+    //            }
+    //        }
 
-            return false;
-        }
+    //        return false;
+    //    }
 
-        return true;
-    }
+    //    return true;
+    //}
 
-    private void OnCountdownTimerIsExpired()
-    {
-        ControllerSelectionUI.Instance.HideControllerSelectionUI();
+    //private void OnCountdownTimerIsExpired()
+    //{
+    //    ControllerSelectionUI.Instance.HideControllerSelectionUI();
 
-        StartGame();
-    }
+    //    StartGame();
+    //}
 
     public void UpdateLocalPlayerLoadedLevel()
     {
@@ -181,11 +189,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             currentLevel = PlayerPrefs.GetString(StaticStrings.CURRENT_LEVEL, "1");
         }
 
+        Instantiate(playerInputManagerPrefab);
+
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            if (!PhotonNetwork.IsMasterClient) return;
-
-            photonView.RPC(nameof(InstantiatePlayers), RpcTarget.All);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                photonView.RPC(nameof(InstantiatePlayers), RpcTarget.All);
+            }
         }
         else
         {
@@ -236,8 +247,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    mapLoad.LoadMap(int.Parse(currentLevel));
-                    //photonView.RPC(nameof(LoadMapRPC), RpcTarget.All, int.Parse(currentLevel));
+                    //mapLoad.LoadMap(int.Parse(currentLevel));
+                    photonView.RPC(nameof(LoadMapRPC), RpcTarget.MasterClient, int.Parse(currentLevel));
                 }
             }
             else
@@ -279,6 +290,34 @@ public class GameManager : MonoBehaviourPunCallbacks
         return isGameOver;
     }
 
+    public int[] GetPlayerOneStats()
+    {
+        return playerOneStats;
+    }
+
+    public int[] GetPlayerTwoStats()
+    {
+        return playerTwoStats;
+    }
+
+    public void ResetPlayersStats()
+    {
+        Array.Clear(playerOneStats, 0, playerOneStats.Length);
+        Array.Clear(playerTwoStats, 0, playerTwoStats.Length);
+    }
+
+    public void UpdatePlayerStats(int playerIndex, int index, int value)
+    {
+        if (playerIndex == 1)
+        {
+            playerOneStats[index] = value;
+        }
+        else if (playerIndex == 2)
+        {
+            playerTwoStats[index] = value;
+        }
+    }
+
     [PunRPC]
     public void InstantiatePlayers()
     {
@@ -289,7 +328,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (playerOneGameObject.TryGetComponent(out BattleCityPlayer battleCityPlayerOne))
         {
-            battleCityPlayerOne.SetLocalPlayerActorNumber(0);
+            battleCityPlayerOne.SetLocalPlayerActorNumber(PhotonNetwork.LocalPlayer.ActorNumber == 1 ? 0 : 1);
 
             battleCityPlayerOne.gameObject.name = prefabGameObjectName;
             battleCityPlayerOne.transform.SetParent(playerSpawnPoint);
@@ -315,5 +354,21 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void LoadMapRPC(int currentLevel)
     {
         mapLoad.LoadMap(currentLevel);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(playerOneStats);
+            stream.SendNext(playerTwoStats);
+            stream.SendNext(isGameOver);
+        }
+        else
+        {
+            playerOneStats = (int[])stream.ReceiveNext();
+            playerTwoStats = (int[])stream.ReceiveNext();
+            isGameOver = (bool)stream.ReceiveNext();
+        }
     }
 }

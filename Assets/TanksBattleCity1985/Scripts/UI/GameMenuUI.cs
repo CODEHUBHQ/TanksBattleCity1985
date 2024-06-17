@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,9 +17,13 @@ public class GameMenuUI : MonoBehaviour
 
     private List<string> gameMenuOrderedButtonsMethodNames = new List<string>();
 
+    private PhotonView photonView;
+
     private void Awake()
     {
         Instance = this;
+
+        photonView = GetComponent<PhotonView>();
 
         gameMenuOrderedButtonsMethodNames.Add(nameof(ResumeButtonOnClick));
         gameMenuOrderedButtonsMethodNames.Add(nameof(MainMenuButtonOnClick));
@@ -34,7 +39,7 @@ public class GameMenuUI : MonoBehaviour
         }
     }
 
-    private void ResumeGame()
+    public void ResumeGame()
     {
         StartCoroutine(nameof(ToggleGameIsPausedDelayed));
 
@@ -57,17 +62,43 @@ public class GameMenuUI : MonoBehaviour
 
     public void ResumeButtonOnClick()
     {
-        ResumeGame();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(ResumeGamePunRPC), RpcTarget.All);
+        }
+        else
+        {
+            ResumeGame();
+        }
     }
 
     public void MainMenuButtonOnClick()
     {
-        GoToMainMenu();
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            photonView.RPC(nameof(GoToMainMenuPunRPC), RpcTarget.All);
+        }
+        else
+        {
+            GoToMainMenu();
+        }
     }
 
     public void ToggleGameMenu()
     {
         gameMenuPanel.SetActive(!gameMenuPanel.activeSelf);
         gameMenuIconOnClick.gameObject.SetActive(gameMenuPanel.activeSelf ? false : true);
+    }
+
+    [PunRPC]
+    public void ResumeGamePunRPC()
+    {
+        ResumeGame();
+    }
+
+    [PunRPC]
+    public void GoToMainMenuPunRPC()
+    {
+        GoToMainMenu();
     }
 }

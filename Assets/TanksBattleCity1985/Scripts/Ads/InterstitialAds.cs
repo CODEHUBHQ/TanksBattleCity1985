@@ -16,13 +16,12 @@ public class InterstitialAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     private void Awake()
     {
         Instance = this;
-
-        DontDestroyOnLoad(this);
     }
 
     // Load content to the Ad Unit:
     public void LoadAd(Action onAddLoaded = null)
     {
+#if !UNITY_STANDALONE
         this.onAddLoaded = onAddLoaded;
 
         // Get the Ad Unit ID for the current platform:
@@ -35,14 +34,17 @@ public class InterstitialAds : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
         // IMPORTANT! Only load content AFTER initialization (in this example, initialization is handled in a different script).
         Debug.Log("Loading Ad: " + adUnitId);
         Advertisement.Load(adUnitId, this);
+#endif
     }
 
     // Show the loaded content in the Ad Unit:
     public void ShowAd()
     {
+#if !UNITY_STANDALONE
         // Note that if the ad content wasn't previously loaded, this method will fail
         Debug.Log("Showing Ad: " + adUnitId);
         Advertisement.Show(adUnitId, this);
+#endif
     }
 
     // Implement Load Listener and Show Listener interface methods: 

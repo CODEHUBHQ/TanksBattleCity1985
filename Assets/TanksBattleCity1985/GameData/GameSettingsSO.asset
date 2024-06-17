@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c374f1f1d4acf48a8905b0bf698d3e, type: 3}
   m_Name: GameSettingsSO
   m_EditorClassIdentifier: 
-  appVersion: 1.0.1
+  appVersion: 1.1.3
   serverRegionCode: 0
   maxPing: 64000000c8000000f4010000e8030000
+  maxPlayers: 2
