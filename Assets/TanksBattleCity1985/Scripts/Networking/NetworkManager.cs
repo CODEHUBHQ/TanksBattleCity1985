@@ -21,8 +21,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Instance = this;
 
         PhotonNetwork.AutomaticallySyncScene = true;
-        //PhotonNetwork.SendRate = 60;
-        //PhotonNetwork.SerializationRate = 60;
+        PhotonNetwork.SendRate = 60;
+        PhotonNetwork.SerializationRate = 60;
         PhotonNetwork.MinimalTimeScaleToDispatchInFixedUpdate = 1;
         DontDestroyOnLoad(gameObject);
     }

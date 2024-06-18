@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleCityBullet : MonoBehaviour
+public class BattleCityBullet : MonoBehaviour, IPunObservable
 {
     [SerializeField] private float speed;
 
@@ -158,6 +158,20 @@ public class BattleCityBullet : MonoBehaviour
         if (otherGameObject != null)
         {
             PhotonNetwork.Destroy(otherGameObject.gameObject);
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else if (stream.IsReading)
+        {
+            transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
 }

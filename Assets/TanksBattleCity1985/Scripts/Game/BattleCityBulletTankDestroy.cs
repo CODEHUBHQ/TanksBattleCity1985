@@ -58,7 +58,6 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
                 if (tank.name.Contains("Player"))
                 {
                     tank.GetComponent<BattleCityPlayer>().Hit();
-                    tank.GetComponent<BoxCollider2D>().enabled = false;
                     
                     tankAnim.SetBool(StaticStrings.HIT, true);
 

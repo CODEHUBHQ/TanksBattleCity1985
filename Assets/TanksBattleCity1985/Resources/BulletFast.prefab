@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1733338431507461903}
   - component: {fileID: 4904173762783947535}
-  - component: {fileID: 4881835834676173372}
+  - component: {fileID: 6869395708626705466}
   - component: {fileID: 2460341553842946259}
   - component: {fileID: 8980630018434927901}
   - component: {fileID: 8363358768251682687}
@@ -60,12 +60,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 0
   ObservedComponents:
-  - {fileID: 4881835834676173372}
+  - {fileID: 6869395708626705466}
   - {fileID: 2460341553842946259}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4881835834676173372
+--- !u!114 &6869395708626705466
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,13 +74,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 4679839608823234108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 1
+    InterpolateOption: 2
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
 --- !u!114 &2460341553842946259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,16 +114,16 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 1
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: input_x
   - Type: 1
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: input_y
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: hit
   m_SynchronizeLayers:
-  - SynchronizeType: 1
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!212 &8980630018434927901
 SpriteRenderer:

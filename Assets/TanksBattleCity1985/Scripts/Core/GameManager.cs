@@ -102,6 +102,20 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+        if (changedProps.ContainsKey(StaticStrings.PLAYER_ONE_SCORE))
+        {
+            playerOneStats = (int[])changedProps[StaticStrings.PLAYER_ONE_SCORE];
+
+            return;
+        }
+
+        if (changedProps.ContainsKey(StaticStrings.PLAYER_TWO_SCORE))
+        {
+            playerTwoStats = (int[])changedProps[StaticStrings.PLAYER_TWO_SCORE];
+
+            return;
+        }
+
         if (changedProps.ContainsKey(StaticStrings.PLAYER_LOADED_LEVEL))
         {
             BattleCityEagle.Instance.SetGameLevel((int)changedProps[StaticStrings.PLAYER_LOADED_LEVEL]);
@@ -300,22 +314,13 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         return playerTwoStats;
     }
 
-    public void ResetPlayersStats()
+    public void UpdatePlayerStats(int easyTanksKilled, int fastTanksKilled, int mediumTanksKilled, int strongTanksKilled, int totalLevelScore)
     {
-        Array.Clear(playerOneStats, 0, playerOneStats.Length);
-        Array.Clear(playerTwoStats, 0, playerTwoStats.Length);
-    }
-
-    public void UpdatePlayerStats(int playerIndex, int index, int value)
-    {
-        if (playerIndex == 1)
-        {
-            playerOneStats[index] = value;
-        }
-        else if (playerIndex == 2)
-        {
-            playerTwoStats[index] = value;
-        }
+        playerOneStats[0] = easyTanksKilled;
+        playerOneStats[1] = fastTanksKilled;
+        playerOneStats[2] = mediumTanksKilled;
+        playerOneStats[3] = strongTanksKilled;
+        playerOneStats[4] = totalLevelScore;
     }
 
     [PunRPC]
@@ -360,14 +365,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(playerOneStats);
-            stream.SendNext(playerTwoStats);
+            //stream.SendNext(playerOneStats);
+            //stream.SendNext(playerTwoStats);
             stream.SendNext(isGameOver);
         }
         else
         {
-            playerOneStats = (int[])stream.ReceiveNext();
-            playerTwoStats = (int[])stream.ReceiveNext();
+            //playerOneStats = (int[])stream.ReceiveNext();
+            //playerTwoStats = (int[])stream.ReceiveNext();
             isGameOver = (bool)stream.ReceiveNext();
         }
     }

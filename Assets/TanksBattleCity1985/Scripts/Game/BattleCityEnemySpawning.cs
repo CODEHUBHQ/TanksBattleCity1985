@@ -66,24 +66,11 @@ public class BattleCityEnemySpawning : MonoBehaviour, IPunObservable
         }
         else if (next >= 20 && tankCount <= 1)
         {
-            // load next map
-            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+            if (!BattleCityMapLoad.Instance.IsLoadingMap())
             {
-                if (!invokeOnce)
-                {
-                    invokeOnce = true;
+                BattleCityMapLoad.Instance.SetIsLoadingMap(true);
 
-                    photonView.RPC(nameof(LoadNextMapPunRPC), RpcTarget.All);
-                }
-            }
-            else
-            {
-                if (!BattleCityMapLoad.Instance.IsLoadingMap())
-                {
-                    BattleCityMapLoad.Instance.SetIsLoadingMap(true);
-
-                    BattleCityMapLoad.Instance.LoadMap(true, this);
-                }
+                BattleCityMapLoad.Instance.LoadMap(true, this);
             }
         }
     }
@@ -249,18 +236,6 @@ public class BattleCityEnemySpawning : MonoBehaviour, IPunObservable
     public void EnemyWasSpawnedPunRPC()
     {
         BattleCityEagle.Instance.EnemyWasSpawned();
-    }
-
-    [PunRPC]
-    public void LoadNextMapPunRPC()
-    {
-        // load next map
-        if (!BattleCityMapLoad.Instance.IsLoadingMap())
-        {
-            BattleCityMapLoad.Instance.SetIsLoadingMap(true);
-
-            BattleCityMapLoad.Instance.LoadMap(true, this);
-        }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

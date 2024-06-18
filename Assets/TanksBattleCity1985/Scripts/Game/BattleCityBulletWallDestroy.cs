@@ -1,16 +1,19 @@
 using Photon.Pun;
+using Photon.Pun.Demo.Asteroids;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleCityBulletWallDestroy : MonoBehaviour
 {
+    private Transform bulletTransform;
     private Transform wallTransform;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var bulletAnimator = gameObject.GetComponent<Animator>();
 
+        bulletTransform = gameObject.GetComponent<Transform>();
         wallTransform = collision.GetComponent<Transform>();
 
         if (collision.gameObject.name.Contains("Zone"))
@@ -20,28 +23,25 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
             SoundManager.Instance.PlayBulletIronHitSound();
         }
 
-        if (!bulletAnimator.GetBool(StaticStrings.HIT))
+        if ((wallTransform.name.Contains("Wall") || wallTransform.name.Contains("Iron")) && !bulletAnimator.GetBool(StaticStrings.HIT))
         {
-            if ((wallTransform.name.Contains("Wall") || wallTransform.name.Contains("Iron")))
+            bulletAnimator.SetBool(StaticStrings.HIT, true);
+
+            DestroyWallsAccordingToCoordinates(Mathf.Round(bulletTransform.position.x), Mathf.Round(bulletTransform.position.y), wallTransform);
+
+            if (wallTransform.name.Contains("Wall"))
             {
-                bulletAnimator.SetBool(StaticStrings.HIT, true);
+                SoundManager.Instance.PlayBulletWallHitSound();
+            }
 
-                DestroyWallsAccordingToCoordinates(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y));
-
-                if (wallTransform.name.Contains("Wall"))
-                {
-                    SoundManager.Instance.PlayBulletWallHitSound();
-                }
-
-                if (wallTransform.name.Contains("Iron"))
-                {
-                    SoundManager.Instance.PlayBulletIronHitSound();
-                }
+            if (wallTransform.name.Contains("Iron"))
+            {
+                SoundManager.Instance.PlayBulletIronHitSound();
             }
         }
     }
 
-    private void DestroyWallsAccordingToCoordinates(float x, float y)
+    private void DestroyWallsAccordingToCoordinates(float x, float y, Transform wallTransform)
     {
         var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
         var bulletAnimator = gameObject.GetComponent<Animator>();
@@ -57,8 +57,28 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
                 x -= 1;
             }
 
-            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
+            Transform wallPart1 = null;
+
+            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
+
+            if (wallPart1 == null)
+            {
+                wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
+            }
+
+            Transform wallPart2 = null;
+
+            wallPart2 = ts.GetByNameAndCoords("Wall", x, y - 1);
+
+            if (wallPart2 == null)
+            {
+                wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y - 1);
+            }
+
+            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
+            PartiallyDestroy(wallPart1, bulletAnimator);
+            PartiallyDestroy(wallPart2, bulletAnimator);
         }
 
         // Vertical shot
@@ -69,8 +89,28 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
                 y -= 1;
             }
 
-            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
+            Transform wallPart1 = null;
+
+            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
+
+            if (wallPart1 == null)
+            {
+                wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
+            }
+
+            Transform wallPart2 = null;
+
+            wallPart2 = ts.GetByNameAndCoords("Wall", x - 1, y);
+
+            if (wallPart2 == null)
+            {
+                wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x - 1, wallTransform.position.y);
+            }
+
+            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
+            PartiallyDestroy(wallPart1, bulletAnimator);
+            PartiallyDestroy(wallPart2, bulletAnimator);
         }
     }
 

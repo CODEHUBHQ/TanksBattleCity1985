@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class BattleCityPlayer : MonoBehaviour
 {
@@ -37,7 +38,6 @@ public class BattleCityPlayer : MonoBehaviour
     private int totalLevelScore;
 
     private bool isFreezed;
-    private bool isHit;
 
     private void Awake()
     {
@@ -183,33 +183,23 @@ public class BattleCityPlayer : MonoBehaviour
 
     public void Hit()
     {
-        if (!isHit)
+        lives--;
+
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            isHit = true;
+            if (!photonView.IsMine) return;
 
-            lives--;
-
-            if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
-            {
-                if (!photonView.IsMine) return;
-
-                var props = new ExitGames.Client.Photon.Hashtable()
+            var props = new ExitGames.Client.Photon.Hashtable()
                 {
                     { StaticStrings.PLAYER_LIVES, lives }
                 };
 
-                PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-            }
-            else
-            {
-                BattleCityEagle.Instance.SetPlayerLives(localPlayerActorNumber, lives);
-            }
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
-    }
-
-    public void SetIsHit(bool isHit)
-    {
-        this.isHit = isHit;
+        else
+        {
+            BattleCityEagle.Instance.SetPlayerLives(localPlayerActorNumber, lives);
+        }
     }
 
     public bool IsPlayerFreezed()
@@ -266,8 +256,6 @@ public class BattleCityPlayer : MonoBehaviour
     {
         totalLevelScore += score;
 
-        GameManager.Instance.UpdatePlayerStats(playerIndex, 4, totalLevelScore);
-
         if (PlayerPrefs.HasKey(StaticStrings.PLAYER_HIGH_SCORE_PREF_KEY))
         {
             var playerHighScore = PlayerPrefs.GetString(StaticStrings.PLAYER_HIGH_SCORE_PREF_KEY);
@@ -290,22 +278,60 @@ public class BattleCityPlayer : MonoBehaviour
         {
             case 100:
                 easyTanksKilled++;
-                GameManager.Instance.UpdatePlayerStats(playerIndex, 0, easyTanksKilled);
                 break;
             case 200:
                 fastTanksKilled++;
-                GameManager.Instance.UpdatePlayerStats(playerIndex, 1, fastTanksKilled);
                 break;
             case 300:
                 mediumTanksKilled++;
-                GameManager.Instance.UpdatePlayerStats(playerIndex, 2, mediumTanksKilled);
                 break;
             case 400:
                 strongTanksKilled++;
-                GameManager.Instance.UpdatePlayerStats(playerIndex, 3, strongTanksKilled);
                 break;
             default:
                 break;
+        }
+
+        if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+        {
+            if (playerIndex == 1)
+            {
+                int[] playerOneStats = new int[5];
+
+                playerOneStats[0] = easyTanksKilled;
+                playerOneStats[1] = fastTanksKilled;
+                playerOneStats[2] = mediumTanksKilled;
+                playerOneStats[3] = strongTanksKilled;
+                playerOneStats[4] = totalLevelScore;
+
+                var props = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { StaticStrings.PLAYER_ONE_SCORE, playerOneStats },
+                };
+
+                PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            }
+            else if (playerIndex == 2)
+            {
+                int[] playerTwoStats = new int[5];
+
+                playerTwoStats[0] = easyTanksKilled;
+                playerTwoStats[1] = fastTanksKilled;
+                playerTwoStats[2] = mediumTanksKilled;
+                playerTwoStats[3] = strongTanksKilled;
+                playerTwoStats[4] = totalLevelScore;
+
+                var props = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { StaticStrings.PLAYER_TWO_SCORE, playerTwoStats },
+                };
+
+                PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            }
+        }
+        else
+        {
+            GameManager.Instance.UpdatePlayerStats(easyTanksKilled, fastTanksKilled, mediumTanksKilled, strongTanksKilled, totalLevelScore);
         }
     }
 

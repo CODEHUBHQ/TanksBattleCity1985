@@ -24,6 +24,8 @@ public static class StaticStrings
     public const string PLAYER_LIVES = "PlayerLives";
     public const string PLAYER_LOADED_LEVEL = "PlayerLoadedLevel";
     public const string PLAYER_INSTANTIATED = "PlayerInstantiated";
+    public const string PLAYER_ONE_SCORE = "PlayerOneScore";
+    public const string PLAYER_TWO_SCORE = "PlayerTwoScore";
 
     // Animator params
     public static readonly int INPUT_X = Animator.StringToHash("input_x");

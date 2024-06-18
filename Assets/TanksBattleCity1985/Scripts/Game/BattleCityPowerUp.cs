@@ -110,7 +110,7 @@ public class BattleCityPowerUp : MonoBehaviour, IPunObservable
         {
             var photonViewID = battleCityPlayer.GetComponent<PhotonView>().ViewID;
 
-            photonView.RPC(nameof(DestroyAllTanksPunRPC), RpcTarget.All, photonViewID);
+            photonView.RPC(nameof(DestroyAllTanksPunRPC), RpcTarget.MasterClient, photonViewID);
         }
         else
         {
@@ -239,7 +239,6 @@ public class BattleCityPowerUp : MonoBehaviour, IPunObservable
 
         if (go != null)
         {
-            var battleCityPlayer = go.gameObject.GetComponent<BattleCityPlayer>();
             var ts = BattleCityMapLoad.Instance.GeneratedEnemyContainer.GetComponentsInChildren<Transform>();
 
             foreach (var t in ts)
@@ -248,10 +247,11 @@ public class BattleCityPowerUp : MonoBehaviour, IPunObservable
                 {
                     if (t.TryGetComponent(out BattleCityEnemy battleCityEnemy))
                     {
-                        battleCityPlayer.UpdatePlayerLevelScore(battleCityEnemy.GetHitPTS(), go.OwnerActorNr);
-                    }
+                        var battleCityPlayer = go.gameObject.GetComponent<BattleCityPlayer>();
 
-                    t.GetComponent<Animator>().SetBool(StaticStrings.HIT, true);
+                        battleCityPlayer.UpdatePlayerLevelScore(battleCityEnemy.GetHitPTS(), go.OwnerActorNr);
+                        t.GetComponent<Animator>().SetBool(StaticStrings.HIT, true);
+                    }
                 }
             }
         }

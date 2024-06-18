@@ -65,7 +65,9 @@ public class BattleCityMapLoad : MonoBehaviour, IPunObservable
             {
                 if (NetworkManager.Instance == null || (NetworkManager.Instance != null && NetworkManager.Instance.GameMode != GameMode.Multiplayer))
                 {
+#if !UNITY_STANDALONE
                     Time.timeScale = 0f;
+#endif
 
                     InterstitialAds.Instance.LoadAd(() =>
                     {
@@ -479,7 +481,34 @@ public class BattleCityMapLoad : MonoBehaviour, IPunObservable
     [PunRPC]
     public void ResetPlayerPunRPC()
     {
-        GameManager.Instance.ResetPlayersStats();
+        foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
+        {
+            if (player.ActorNumber == 1)
+            {
+                int[] playerOneStats = new int[5];
+                playerOneStats[4] = GameManager.Instance.GetPlayerOneStats()[4];
+
+                var props = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { StaticStrings.PLAYER_ONE_SCORE, playerOneStats },
+                };
+
+                player.SetCustomProperties(props);
+            }
+            else if (player.ActorNumber == 2)
+            {
+                int[] playerTwoStats = new int[5];
+                playerTwoStats[4] = GameManager.Instance.GetPlayerTwoStats()[4];
+
+                var props = new ExitGames.Client.Photon.Hashtable()
+                {
+                    { StaticStrings.PLAYER_TWO_SCORE, playerTwoStats },
+                };
+
+                player.SetCustomProperties(props);
+            }
+        }
+
         var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
 
         foreach (var battleCityPlayer in battleCityPlayers)
@@ -512,12 +541,12 @@ public class BattleCityMapLoad : MonoBehaviour, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(currentLevel);
-            stream.SendNext(isLoadingMap);
+            //stream.SendNext(isLoadingMap);
         }
         else
         {
             currentLevel = (int)stream.ReceiveNext();
-            isLoadingMap = (bool)stream.ReceiveNext();
+            //isLoadingMap = (bool)stream.ReceiveNext();
         }
     }
 }

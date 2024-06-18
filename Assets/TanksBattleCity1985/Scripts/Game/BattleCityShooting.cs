@@ -121,8 +121,8 @@ public class BattleCityShooting : MonoBehaviour
         }
 
         // Creates new bullet
-        //var pos = transform.position + new Vector3(x, y, 0);
-        var pos = transform.position;
+        var pos = transform.position + new Vector3(x, y, 0);
+        //var pos = transform.position;
         GameObject newBullet;
 
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
@@ -229,11 +229,19 @@ public class BattleCityShooting : MonoBehaviour
 
             if (transform.TryGetComponent(out BattleCityPlayer battleCityPlayer))
             {
-                battleCityPlayer.SetIsHit(false);
-
                 if (SoundManager.Instance.IsVibrateEnabled())
                 {
-                    PlayerInputHandler.Instance.RumblePulse(battleCityPlayer.LocalPlayerActorNumber);
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        if (photonView.IsMine)
+                        {
+                            PlayerInputHandler.Instance.RumblePulse(battleCityPlayer.LocalPlayerActorNumber);
+                        }
+                    }
+                    else
+                    {
+                        PlayerInputHandler.Instance.RumblePulse(battleCityPlayer.LocalPlayerActorNumber);
+                    }
                 }
 
                 battleCityPlayer.SetLevel(1);
@@ -243,6 +251,11 @@ public class BattleCityShooting : MonoBehaviour
                 if (lives <= 0)
                 {
                     transform.GetComponent<BattleCityPlayer>().SetLives(0);
+
+                    if (photonView.IsMine)
+                    {
+                        PhotonNetwork.Destroy(transform.gameObject);
+                    }
 
                     var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
 
