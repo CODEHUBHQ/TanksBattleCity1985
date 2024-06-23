@@ -64,10 +64,6 @@ public class MenuUIManager : MonoBehaviour
         PlayerPrefs.Save();
 
         //LoadingManager.LoadScene(LoadingManager.Scene.GameScene);
-        InterstitialAds.Instance.LoadAd(() =>
-        {
-            InterstitialAds.Instance.ShowAd();
-        });
 
         levelsPanel.gameObject.SetActive(true);
     }

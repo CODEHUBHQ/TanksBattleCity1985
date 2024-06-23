@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class JoystickController : MonoBehaviour
 {
+    public static JoystickController Instance { get; private set; }
+
     [SerializeField] private GameObject movementButtons;
     [SerializeField] private GameObject moveUpButton;
     [SerializeField] private GameObject moveDownButton;
@@ -21,6 +23,11 @@ public class JoystickController : MonoBehaviour
 
     private Button shootButton;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         UnityEngine.InputSystem.EnhancedTouch.EnhancedTouchSupport.Enable();
@@ -34,7 +41,7 @@ public class JoystickController : MonoBehaviour
 
             shootButton = GameObject.Find("UICanvas").transform.Find("JoystickController").Find("ShootButton").GetComponent<Button>();
 
-            shootButton.onClick.AddListener(() =>
+            shootButton.GetComponent<ButtonLongPress>().OnLongPressDown.AddListener(() =>
             {
                 playerInputHandler.Shoot();
             });
@@ -149,5 +156,13 @@ public class JoystickController : MonoBehaviour
         moveDownButtonIconImage.color = new Color32(255, 255, 255, 255);
         moveRightButtonIconImage.color = new Color32(255, 255, 255, 255);
         moveLeftButtonIconImage.color = new Color32(255, 255, 255, 255);
+    }
+
+    public void DisableJoystickController()
+    {
+        foreach (Transform child in transform.GetComponentsInChildren<Transform>())
+        {
+            child.gameObject.SetActive(false);
+        }
     }
 }

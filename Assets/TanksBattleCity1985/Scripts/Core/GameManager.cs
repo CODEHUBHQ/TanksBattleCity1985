@@ -49,9 +49,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Instance = this;
 
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
-
         GetComponent<CountdownTimer>().enabled = false;
         //if (NetworkManager.Instance == null || NetworkManager.Instance.GameMode != GameMode.Multiplayer)
         //{

@@ -61,19 +61,19 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
 
             wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
 
-            if (wallPart1 == null)
-            {
-                wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
-            }
+            //if (wallPart1 == null)
+            //{
+            //    wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
+            //}
 
             Transform wallPart2 = null;
 
             wallPart2 = ts.GetByNameAndCoords("Wall", x, y - 1);
 
-            if (wallPart2 == null)
-            {
-                wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y - 1);
-            }
+            //if (wallPart2 == null)
+            //{
+            //    wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y - 1);
+            //}
 
             //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
             //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
@@ -93,19 +93,19 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
 
             wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
 
-            if (wallPart1 == null)
-            {
-                wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
-            }
+            //if (wallPart1 == null)
+            //{
+            //    wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
+            //}
 
             Transform wallPart2 = null;
 
             wallPart2 = ts.GetByNameAndCoords("Wall", x - 1, y);
 
-            if (wallPart2 == null)
-            {
-                wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x - 1, wallTransform.position.y);
-            }
+            //if (wallPart2 == null)
+            //{
+            //    wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x - 1, wallTransform.position.y);
+            //}
 
             //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
             //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);

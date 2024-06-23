@@ -121,8 +121,8 @@ public class BattleCityShooting : MonoBehaviour
         }
 
         // Creates new bullet
-        var pos = transform.position + new Vector3(x, y, 0);
-        //var pos = transform.position;
+        //var pos = transform.position + new Vector3(x, y, 0);
+        var pos = transform.position;
         GameObject newBullet;
 
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
@@ -252,20 +252,45 @@ public class BattleCityShooting : MonoBehaviour
                 {
                     transform.GetComponent<BattleCityPlayer>().SetLives(0);
 
-                    if (photonView.IsMine)
-                    {
-                        PhotonNetwork.Destroy(transform.gameObject);
-                    }
-
-                    var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
-
                     var allLives = 0;
 
-                    foreach (var bcp in battleCityPlayers)
+                    if (NetworkManager.Instance == null || (NetworkManager.Instance != null && NetworkManager.Instance.GameMode != GameMode.Multiplayer))
                     {
-                        if (bcp.Lives > 0)
+                        var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
+
+                        foreach (var bcp in battleCityPlayers)
                         {
-                            allLives = bcp.Lives;
+                            if (bcp.Lives > 0)
+                            {
+                                allLives = bcp.Lives;
+                            }
+                        }
+                    }
+                    else if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        if (PhotonNetwork.PlayerList.Length <= 1)
+                        {
+                            allLives = 0;
+                        }
+                        else if (PhotonNetwork.PlayerList.Length == 2)
+                        {
+                            if (photonView.IsMine)
+                            {
+                                //PhotonNetwork.Destroy(transform.gameObject);
+                                transform.GetComponent<BoxCollider2D>().enabled = false;
+                                transform.position = new Vector3(120, 20, 0);
+                                JoystickController.Instance.DisableJoystickController();
+                            }
+
+                            var battleCityPlayers = FindObjectsByType<BattleCityPlayer>(FindObjectsSortMode.None);
+
+                            foreach (var bcp in battleCityPlayers)
+                            {
+                                if (bcp.Lives > 0)
+                                {
+                                    allLives = bcp.Lives;
+                                }
+                            }
                         }
                     }
 

@@ -63,18 +63,6 @@ public class BattleCityMapLoad : MonoBehaviour, IPunObservable
 
             LevelStatsUI.Instance.ShowPlayersStats(nextLevel - 1, () =>
             {
-                if (NetworkManager.Instance == null || (NetworkManager.Instance != null && NetworkManager.Instance.GameMode != GameMode.Multiplayer))
-                {
-#if !UNITY_STANDALONE
-                    Time.timeScale = 0f;
-#endif
-
-                    InterstitialAds.Instance.LoadAd(() =>
-                    {
-                        InterstitialAds.Instance.ShowAd();
-                    });
-                }
-
                 var playerBalance = PlayerPrefs.GetString(StaticStrings.PLAYER_BALANCE, "0");
                 var newPlayerBalance = int.Parse(playerBalance) + 1;
 
