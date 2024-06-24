@@ -7,13 +7,23 @@ public class ButtonLongPress : MonoBehaviour, IPointerUpHandler, IPointerDownHan
     public UnityEvent OnLongPressDown = new UnityEvent();
     public UnityEvent OnLongPressUp = new UnityEvent();
 
+    private float isPressedTimer;
+    private float isPressedTimerMax = 0.1f;
+
     private bool isPressed;
 
     private void FixedUpdate()
     {
         if (isPressed)
         {
-            OnLongPressDown?.Invoke();
+            isPressedTimer -= Time.deltaTime;
+
+            if (isPressedTimer < 0f)
+            {
+                OnLongPressDown?.Invoke();
+
+                isPressedTimer = isPressedTimerMax;
+            }
         }
     }
 

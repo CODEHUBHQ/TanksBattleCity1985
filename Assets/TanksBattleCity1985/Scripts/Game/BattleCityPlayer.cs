@@ -48,7 +48,7 @@ public class BattleCityPlayer : MonoBehaviour
 
     private void Start()
     {
-        level = 1;
+        level = 3;
         lives = 3;
     }
 
