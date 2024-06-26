@@ -305,6 +305,8 @@ public class LobbyHandler : MonoBehaviourPunCallbacks
     {
         Debug.Log($"Start Game");
 
+        insideRoomStartGameButton.interactable = false;
+
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
 

@@ -37,7 +37,7 @@ public class BattleCityBulletIronDestroy : MonoBehaviour
         {
             bulletAnimator.SetBool(StaticStrings.HIT, true);
 
-            DestroyWallsAccordingToCoordinates(Mathf.Round(bulletTransform.position.x), Mathf.Round(bulletTransform.position.y), ironWall);
+            DestroyWallsAccordingToCoordinates(Mathf.Round(bulletTransform.position.x), Mathf.Round(bulletTransform.position.y));
         }
 
         PlaySound();
@@ -56,7 +56,7 @@ public class BattleCityBulletIronDestroy : MonoBehaviour
         }
     }
 
-    private void DestroyWallsAccordingToCoordinates(float x, float y, Transform ironWall)
+    private void DestroyWallsAccordingToCoordinates(float x, float y)
     {
         ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
 
@@ -82,29 +82,9 @@ public class BattleCityBulletIronDestroy : MonoBehaviour
                 Destroy(t.gameObject);
             });
 
-            Transform wallPart1 = null;
-
-            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
-
-            if (wallPart1 == null)
-            {
-                wallPart1 = ts.GetByNameAndCoords("Wall", ironWall.position.x, ironWall.position.y);
-            }
-
-            Transform wallPart2 = null;
-
-            wallPart2 = ts.GetByNameAndCoords("Wall", x, y - 1);
-
-            if (wallPart2 == null)
-            {
-                wallPart2 = ts.GetByNameAndCoords("Wall", ironWall.position.x, ironWall.position.y - 1);
-            }
-
             // Walls destroys doubled
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
-            PartiallyDestroy(wallPart1, bulletAnimator);
-            PartiallyDestroy(wallPart2, bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
         }
 
         // Vertical shot
@@ -126,29 +106,9 @@ public class BattleCityBulletIronDestroy : MonoBehaviour
                 Destroy(t.gameObject);
             });
 
-            Transform wallPart1 = null;
-
-            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
-
-            if (wallPart1 == null)
-            {
-                wallPart1 = ts.GetByNameAndCoords("Wall", ironWall.position.x, ironWall.position.y);
-            }
-
-            Transform wallPart2 = null;
-
-            wallPart2 = ts.GetByNameAndCoords("Wall", x - 1, y);
-
-            if (wallPart2 == null)
-            {
-                wallPart2 = ts.GetByNameAndCoords("Wall", ironWall.position.x - 1, ironWall.position.y);
-            }
-
             // Walls destroys doubled
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
-            PartiallyDestroy(wallPart1, bulletAnimator);
-            PartiallyDestroy(wallPart2, bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
         }
     }
 

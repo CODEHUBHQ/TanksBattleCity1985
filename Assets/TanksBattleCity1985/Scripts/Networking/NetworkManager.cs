@@ -19,8 +19,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        
+
+#if UNITY_STANDALONE
+        Application.targetFrameRate = 59;
+        QualitySettings.vSyncCount = 0;
+#else
         Application.targetFrameRate = 60;
+#endif
 
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.SendRate = 60;

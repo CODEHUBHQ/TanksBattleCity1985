@@ -112,7 +112,7 @@ public class PowerUpsPanel : MonoBehaviour
 
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            photonView.RPC(nameof(ShowPowerUpPunRPC), RpcTarget.All, powerUp);
+            photonView.RPC(nameof(ShowPowerUpPunRPC), RpcTarget.MasterClient, powerUp);
         }
         else
         {

@@ -97,9 +97,13 @@ public class BattleCityBullet : MonoBehaviour, IPunObservable
     {
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
         {
-            var photonViewID = photonView.ViewID;
+            //var photonViewID = photonView.ViewID;
 
-            photonView.RPC(nameof(DestroyAfterAnimationFinishesRPC), RpcTarget.MasterClient, photonViewID);
+            //photonView.RPC(nameof(DestroyAfterAnimationFinishesRPC), RpcTarget.MasterClient, photonViewID);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
         else
         {
@@ -163,15 +167,15 @@ public class BattleCityBullet : MonoBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else if (stream.IsReading)
-        {
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.rotation = (Quaternion)stream.ReceiveNext();
-        }
+        //if (stream.IsWriting)
+        //{
+        //    stream.SendNext(transform.position);
+        //    stream.SendNext(transform.rotation);
+        //}
+        //else if (stream.IsReading)
+        //{
+        //    transform.position = (Vector3)stream.ReceiveNext();
+        //    transform.rotation = (Quaternion)stream.ReceiveNext();
+        //}
     }
 }

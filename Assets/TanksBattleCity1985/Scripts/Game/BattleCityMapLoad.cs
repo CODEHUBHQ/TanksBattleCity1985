@@ -502,11 +502,14 @@ public class BattleCityMapLoad : MonoBehaviour, IPunObservable
         foreach (var battleCityPlayer in battleCityPlayers)
         {
             // player reset
-            battleCityPlayer.gameObject.GetComponent<BattleCityPlayerMovement>().ResetPosition();
-            battleCityPlayer.gameObject.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
-            battleCityPlayer.gameObject.GetComponent<BattleCityShooting>().SetShooting(false);
-            battleCityPlayer.ResetLevelScore();
-            battleCityPlayer.SetShield(6);
+            if (battleCityPlayer.GetComponent<PhotonView>().IsMine)
+            {
+                battleCityPlayer.gameObject.GetComponent<BattleCityPlayerMovement>().ResetPosition();
+                battleCityPlayer.gameObject.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
+                battleCityPlayer.gameObject.GetComponent<BattleCityShooting>().SetShooting(false);
+                battleCityPlayer.ResetLevelScore();
+                battleCityPlayer.SetShield(6);
+            }
         }
     }
 

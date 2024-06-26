@@ -17,7 +17,7 @@ public class BattleCityShooting : MonoBehaviour
     private BattleCityPlayer battleCityPlayer;
     private BattleCityEnemy battleCityEnemy;
 
-    [SerializeField] private int alreadyShot = 0;
+    private int alreadyShot = 0;
     private int maxBulletsAtOneTime = 1;
 
     private void Awake()
@@ -121,8 +121,8 @@ public class BattleCityShooting : MonoBehaviour
         }
 
         // Creates new bullet
-        //var pos = transform.position + new Vector3(x, y, 0);
-        var pos = transform.position;
+        var pos = transform.position + new Vector3(x, y, 0);
+        //var pos = transform.position;
         GameObject newBullet;
 
         if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
@@ -205,7 +205,6 @@ public class BattleCityShooting : MonoBehaviour
         {
             battleCityEnemy.GetComponent<Animator>().enabled = false;
             battleCityEnemy.GetComponent<SpriteRenderer>().sprite = battleCityEnemy.GetHitPTSSprite();
-            battleCityEnemy.GetComponent<BoxCollider2D>().enabled = false;
 
             this.DoAfter(1f, () =>
             {
@@ -224,7 +223,6 @@ public class BattleCityShooting : MonoBehaviour
         }
         else if (!isNPC)
         {
-            transform.GetComponent<BoxCollider2D>().enabled = false;
             transform.position = new Vector3(120, 20, 0);
 
             if (transform.TryGetComponent(out BattleCityPlayer battleCityPlayer))
@@ -277,8 +275,8 @@ public class BattleCityShooting : MonoBehaviour
                             if (photonView.IsMine)
                             {
                                 //PhotonNetwork.Destroy(transform.gameObject);
-                                transform.GetComponent<BoxCollider2D>().enabled = false;
                                 transform.position = new Vector3(120, 20, 0);
+                                transform.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
                                 JoystickController.Instance.DisableJoystickController();
                             }
 
@@ -317,12 +315,11 @@ public class BattleCityShooting : MonoBehaviour
                             battleCityPlayerMovement.ResetPosition();
                         }
 
-                        transform.GetComponent<BoxCollider2D>().enabled = true;
                         transform.GetComponent<Animator>().SetBool(StaticStrings.HIT, false);
 
                         alreadyShot = 0;
 
-                        battleCityPlayer.SetShield(6);
+                        transform.GetComponent<BattleCityPlayer>().SetShield(6);
                     });
                 }
             }
@@ -394,6 +391,18 @@ public class BattleCityShooting : MonoBehaviour
             {
                 battleCityShooting.SetShooting(false);
             }
+        }
+    }
+
+    [PunRPC]
+    public void TankHit(int photonID)
+    {
+        var go = PhotonView.Find(photonID);
+
+        if (go != null)
+        {
+            go.GetComponent<Animator>().SetBool(StaticStrings.HIT, true);
+            go.GetComponent<BattleCityPlayer>().Hit();
         }
     }
 }

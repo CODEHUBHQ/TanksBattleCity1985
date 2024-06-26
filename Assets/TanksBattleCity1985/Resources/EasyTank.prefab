@@ -307,4 +307,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 723302907599991881, guid: a4184b9c79b93d74c9a0e240ea5af1fd, type: 3}
   isNPC: 1
-  alreadyShot: 0

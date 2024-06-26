@@ -57,9 +57,17 @@ public class BattleCityBulletTankDestroy : MonoBehaviour
                 // player
                 if (tank.name.Contains("Player"))
                 {
-                    tank.GetComponent<BattleCityPlayer>().Hit();
-                    
-                    tankAnim.SetBool(StaticStrings.HIT, true);
+                    if (NetworkManager.Instance != null && NetworkManager.Instance.GameMode == GameMode.Multiplayer)
+                    {
+                        var tankPhotonView = tank.GetComponent<PhotonView>();
+
+                        tankPhotonView.RPC("TankHit", RpcTarget.All, tankPhotonView.ViewID);
+                    }
+                    else
+                    {
+                        tankAnim.SetBool(StaticStrings.HIT, true);
+                        tank.GetComponent<BattleCityPlayer>().Hit();
+                    }
 
                     SoundManager.Instance.PlayTankDestroySound();
                 }

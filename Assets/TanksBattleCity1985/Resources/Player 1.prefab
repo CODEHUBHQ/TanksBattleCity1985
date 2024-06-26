@@ -166,8 +166,8 @@ GameObject:
   - component: {fileID: 4159534619880005560}
   - component: {fileID: 6784835113460106369}
   - component: {fileID: 7548139142302361292}
-  - component: {fileID: 9082051798408866225}
   - component: {fileID: 68785811956070272}
+  - component: {fileID: 9082051798408866225}
   - component: {fileID: 3580235860991380841}
   - component: {fileID: 7448447952259049287}
   - component: {fileID: 1701883795200492503}
@@ -363,33 +363,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!50 &9082051798408866225
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8830359699476620358}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!61 &68785811956070272
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -435,6 +408,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &9082051798408866225
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8830359699476620358}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!114 &3580235860991380841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,4 +478,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 5101185563668126581, guid: 9b5b95b013411c546b02b462c94aa1ef, type: 3}
   isNPC: 0
-  alreadyShot: 0

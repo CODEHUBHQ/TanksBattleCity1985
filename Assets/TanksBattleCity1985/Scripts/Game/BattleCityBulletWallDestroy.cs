@@ -27,7 +27,7 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
         {
             bulletAnimator.SetBool(StaticStrings.HIT, true);
 
-            DestroyWallsAccordingToCoordinates(Mathf.Round(bulletTransform.position.x), Mathf.Round(bulletTransform.position.y), wallTransform);
+            DestroyWallsAccordingToCoordinates(Mathf.Round(bulletTransform.position.x), Mathf.Round(bulletTransform.position.y));
 
             if (wallTransform.name.Contains("Wall"))
             {
@@ -41,7 +41,7 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
         }
     }
 
-    private void DestroyWallsAccordingToCoordinates(float x, float y, Transform wallTransform)
+    private void DestroyWallsAccordingToCoordinates(float x, float y)
     {
         var ts = BattleCityMapLoad.Instance.GeneratedWallContainer.GetComponentsInChildren<Transform>();
         var bulletAnimator = gameObject.GetComponent<Animator>();
@@ -57,28 +57,8 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
                 x -= 1;
             }
 
-            Transform wallPart1 = null;
-
-            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
-
-            //if (wallPart1 == null)
-            //{
-            //    wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
-            //}
-
-            Transform wallPart2 = null;
-
-            wallPart2 = ts.GetByNameAndCoords("Wall", x, y - 1);
-
-            //if (wallPart2 == null)
-            //{
-            //    wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y - 1);
-            //}
-
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
-            PartiallyDestroy(wallPart1, bulletAnimator);
-            PartiallyDestroy(wallPart2, bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y - 1), bulletAnimator);
         }
 
         // Vertical shot
@@ -89,28 +69,8 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
                 y -= 1;
             }
 
-            Transform wallPart1 = null;
-
-            wallPart1 = ts.GetByNameAndCoords("Wall", x, y);
-
-            //if (wallPart1 == null)
-            //{
-            //    wallPart1 = ts.GetByNameAndCoords("Wall", wallTransform.position.x, wallTransform.position.y);
-            //}
-
-            Transform wallPart2 = null;
-
-            wallPart2 = ts.GetByNameAndCoords("Wall", x - 1, y);
-
-            //if (wallPart2 == null)
-            //{
-            //    wallPart2 = ts.GetByNameAndCoords("Wall", wallTransform.position.x - 1, wallTransform.position.y);
-            //}
-
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
-            //PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
-            PartiallyDestroy(wallPart1, bulletAnimator);
-            PartiallyDestroy(wallPart2, bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x, y), bulletAnimator);
+            PartiallyDestroy(ts.GetByNameAndCoords("Wall", x - 1, y), bulletAnimator);
         }
     }
 
@@ -144,16 +104,16 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
             else if (inputX == 0)
             {
                 // re-calculate collider size
-                if (inputY == -1)
-                {
-                    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, boxCollider2D.offset.y - 0.25f);
-                    boxCollider2D.size = new Vector2(boxCollider2D.size.x, boxCollider2D.size.y - 0.5f);
-                }
-                else
-                {
-                    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, boxCollider2D.offset.y + 0.25f);
-                    boxCollider2D.size = new Vector2(boxCollider2D.size.x, boxCollider2D.size.y - 0.5f);
-                }
+                //if (inputY == -1)
+                //{
+                //    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, boxCollider2D.offset.y - 0.25f);
+                //    boxCollider2D.size = new Vector2(boxCollider2D.size.x, boxCollider2D.size.y - 0.5f);
+                //}
+                //else
+                //{
+                //    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x, boxCollider2D.offset.y + 0.25f);
+                //    boxCollider2D.size = new Vector2(boxCollider2D.size.x, boxCollider2D.size.y - 0.5f);
+                //}
 
                 if (curr.IsIn(2, 8))
                 {
@@ -178,16 +138,16 @@ public class BattleCityBulletWallDestroy : MonoBehaviour
             else if (inputY == 0)
             {
                 // re-calculate collider size
-                if (inputX == -1)
-                {
-                    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x - 0.25f, boxCollider2D.offset.y);
-                    boxCollider2D.size = new Vector2(boxCollider2D.size.x - 0.5f, boxCollider2D.size.y);
-                }
-                else
-                {
-                    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x + 0.25f, boxCollider2D.offset.y);
-                    boxCollider2D.size = new Vector2(boxCollider2D.size.x - 0.5f, boxCollider2D.size.y);
-                }
+                //if (inputX == -1)
+                //{
+                //    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x - 0.25f, boxCollider2D.offset.y);
+                //    boxCollider2D.size = new Vector2(boxCollider2D.size.x - 0.5f, boxCollider2D.size.y);
+                //}
+                //else
+                //{
+                //    boxCollider2D.offset = new Vector2(boxCollider2D.offset.x + 0.25f, boxCollider2D.offset.y);
+                //    boxCollider2D.size = new Vector2(boxCollider2D.size.x - 0.5f, boxCollider2D.size.y);
+                //}
 
                 if (curr.IsIn(4, 6))
                 {
