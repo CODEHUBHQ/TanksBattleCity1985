@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using Unity.Advertisement.IosSupport.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Advertisement.IosSupport.Components;
 
 namespace Unity.Advertisement.IosSupport.Samples
 {
@@ -19,7 +19,7 @@ namespace Unity.Advertisement.IosSupport.Samples
 
         void Start()
         {
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             // check with iOS to see if the user has accepted or declined tracking
             var status = ATTrackingStatusBinding.GetAuthorizationTrackingStatus();
 
