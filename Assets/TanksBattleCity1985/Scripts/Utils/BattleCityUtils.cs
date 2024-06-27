@@ -6,10 +6,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public static class BattleCityUtils
 {
+    private static Camera mainCamera;
+
     public static int[] GetIntArray(int num)
     {
         List<int> listOfInts = new List<int>();

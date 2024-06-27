@@ -14,6 +14,7 @@ public class GameMenuUI : MonoBehaviour
     [SerializeField] private GameObject gameMenuPanel;
     [SerializeField] private List<Button> gameMenuOrderedButtons;
     [SerializeField] private GameMenuIconOnClick gameMenuIconOnClick;
+    [SerializeField] private Transform customControlsPanel;
 
     private List<string> gameMenuOrderedButtonsMethodNames = new List<string>();
 
@@ -26,6 +27,7 @@ public class GameMenuUI : MonoBehaviour
         photonView = GetComponent<PhotonView>();
 
         gameMenuOrderedButtonsMethodNames.Add(nameof(ResumeButtonOnClick));
+        gameMenuOrderedButtonsMethodNames.Add(nameof(CustomControlsButtonOnClick));
         gameMenuOrderedButtonsMethodNames.Add(nameof(MainMenuButtonOnClick));
 
         for (int i = 0; i < gameMenuOrderedButtons.Count; i++)
@@ -70,6 +72,14 @@ public class GameMenuUI : MonoBehaviour
         {
             ResumeGame();
         }
+    }
+
+    public void CustomControlsButtonOnClick()
+    {
+        gameMenuPanel.SetActive(!gameMenuPanel.activeSelf);
+        customControlsPanel.gameObject.SetActive(true);
+
+        CustomControlsManager.Instance.Init();
     }
 
     public void MainMenuButtonOnClick()

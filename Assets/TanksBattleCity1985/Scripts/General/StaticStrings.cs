@@ -18,6 +18,14 @@ public static class StaticStrings
     public const string GAME_SETTINGS_VIBRATE = "GameVibrate";
     public const string GAME_SETTINGS_DIFFICULTY = "GameDifficulty";
     public const string GAME_SETTINGS_BUTTON_CONTROLLER = "GameButtonController";
+    public const string CONTROLS_SHOOT_BUTTON_POSITION_X = "ControlsShootButtonPositionX";
+    public const string CONTROLS_SHOOT_BUTTON_POSITION_Y = "ControlsShootButtonPositionY";
+    public const string CONTROLS_JOYSTICK_STICK_POSITION_X = "ControlsJoystickStickPositionX";
+    public const string CONTROLS_JOYSTICK_STICK_POSITION_Y = "ControlsJoystickStickPositionY";
+    public const string CONTROLS_JOYSTICK_DPAD_POSITION_X = "ControlsJoystickDPadPositionX";
+    public const string CONTROLS_JOYSTICK_DPAD_POSITION_Y = "ControlsJoystickDPadPositionY";
+    public const string CONTROLS_DPAD_BUTTONS_POSITION_X = "ControlsDPadButtonsPositionX";
+    public const string CONTROLS_DPAD_BUTTONS_POSITION_Y = "ControlsDPadButtonsPositionY";
 
     // photon
     public const string IS_PLAYER_READY = "IsPlayerReady";
