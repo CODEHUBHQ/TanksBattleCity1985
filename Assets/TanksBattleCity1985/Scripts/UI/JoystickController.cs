@@ -58,7 +58,7 @@ public class JoystickController : MonoBehaviour
         {
             foreach (UnityEngine.InputSystem.EnhancedTouch.Touch touch in UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches)
             {
-                if (touch.screenPosition.x > 200f)
+                if (touch.screenPosition.x > Screen.width / 2)
                 {
                     continue;
                 }
