@@ -204,6 +204,7 @@ public class BattleCityShooting : MonoBehaviour
         if (isNPC)
         {
             battleCityEnemy.GetComponent<Animator>().enabled = false;
+            battleCityEnemy.GetComponent<BoxCollider2D>().enabled = false;
             battleCityEnemy.GetComponent<SpriteRenderer>().sprite = battleCityEnemy.GetHitPTSSprite();
 
             this.DoAfter(1f, () =>

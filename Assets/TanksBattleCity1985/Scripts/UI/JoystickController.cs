@@ -58,16 +58,17 @@ public class JoystickController : MonoBehaviour
         {
             foreach (UnityEngine.InputSystem.EnhancedTouch.Touch touch in UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches)
             {
-                HandleMovement(pointer, raycastResult, touch.screenPosition);
+                if (touch.screenPosition.x > 200f)
+                {
+                    continue;
+                }
+
+                HandleMovement(pointer, raycastResult, touch.screenPosition, touch);
             }
-        }
-        else
-        {
-            HandleMovement(pointer, raycastResult, BattleCityUtils.GetMousePosition());
         }
     }
 
-    private void HandleMovement(PointerEventData pointer, List<RaycastResult> raycastResult, Vector2 pos)
+    private void HandleMovement(PointerEventData pointer, List<RaycastResult> raycastResult, Vector2 pos, UnityEngine.InputSystem.EnhancedTouch.Touch touch)
     {
         pointer.position = pos;
         EventSystem.current.RaycastAll(pointer, raycastResult);
@@ -81,7 +82,7 @@ public class JoystickController : MonoBehaviour
             return;
         }
 
-        if (BattleCityUtils.GetMouseButtonUp())
+        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended)
         {
             raycastResult.Clear();
 
@@ -96,10 +97,10 @@ public class JoystickController : MonoBehaviour
         {
             if (result.gameObject.Equals(moveUpButton))
             {
-                playerInputHandler.MoveUp();
-
-                if (BattleCityUtils.GetMouseButtonDown())
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved || touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
                 {
+                    playerInputHandler.MoveUp();
+
                     moveUpButtonIconImage.color = new Color32(89, 89, 89, 255);
                     moveDownButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveRightButtonIconImage.color = new Color32(255, 255, 255, 255);
@@ -109,10 +110,10 @@ public class JoystickController : MonoBehaviour
 
             if (result.gameObject.Equals(moveDownButton))
             {
-                playerInputHandler.MoveDown();
-
-                if (BattleCityUtils.GetMouseButtonDown())
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved || touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
                 {
+                    playerInputHandler.MoveDown();
+
                     moveUpButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveDownButtonIconImage.color = new Color32(89, 89, 89, 255);
                     moveRightButtonIconImage.color = new Color32(255, 255, 255, 255);
@@ -122,10 +123,10 @@ public class JoystickController : MonoBehaviour
 
             if (result.gameObject.Equals(moveRightButton))
             {
-                playerInputHandler.MoveRight();
-
-                if (BattleCityUtils.GetMouseButtonDown())
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved || touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
                 {
+                    playerInputHandler.MoveRight();
+
                     moveUpButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveDownButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveRightButtonIconImage.color = new Color32(89, 89, 89, 255);
@@ -135,10 +136,10 @@ public class JoystickController : MonoBehaviour
 
             if (result.gameObject.Equals(moveLeftButton))
             {
-                playerInputHandler.MoveLeft();
-
-                if (BattleCityUtils.GetMouseButtonDown())
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved || touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary)
                 {
+                    playerInputHandler.MoveLeft();
+
                     moveUpButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveDownButtonIconImage.color = new Color32(255, 255, 255, 255);
                     moveRightButtonIconImage.color = new Color32(255, 255, 255, 255);

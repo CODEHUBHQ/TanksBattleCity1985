@@ -176,7 +176,7 @@ public class CustomControlsManager : MonoBehaviour
     private void UpdateControls()
     {
         shootButtonPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_X, "-100"));
-        shootButtonPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, "250"));
+        shootButtonPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, "100"));
 
         shootButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(shootButtonPosX, shootButtonPosY);
 
@@ -196,8 +196,8 @@ public class CustomControlsManager : MonoBehaviour
         }
         else if (joystickType == 2)
         {
-            dPadButtonsPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, "0"));
-            dPadButtonsPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, "150"));
+            dPadButtonsPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, "150"));
+            dPadButtonsPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, "50"));
 
             dPadButtons.GetComponent<RectTransform>().anchoredPosition = new Vector2(dPadButtonsPosX, dPadButtonsPosY);
         }
@@ -236,7 +236,7 @@ public class CustomControlsManager : MonoBehaviour
         joystickType = int.Parse(PlayerPrefs.GetString(StaticStrings.GAME_SETTINGS_BUTTON_CONTROLLER, "0"));
 
         shootButtonPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_X, "-100"));
-        shootButtonPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, "250"));
+        shootButtonPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, "100"));
 
         shootButton.GetComponent<RectTransform>().anchoredPosition = new Vector3(shootButtonPosX, shootButtonPosY);
 
@@ -310,8 +310,8 @@ public class CustomControlsManager : MonoBehaviour
         }
         else if (joystickType == 2)
         {
-            dPadButtonsPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, "0"));
-            dPadButtonsPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, "150"));
+            dPadButtonsPosX = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, "150"));
+            dPadButtonsPosY = float.Parse(PlayerPrefs.GetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, "50"));
 
             dPadButtons.GetComponent<RectTransform>().anchoredPosition = new Vector3(dPadButtonsPosX, dPadButtonsPosY);
 
@@ -381,12 +381,12 @@ public class CustomControlsManager : MonoBehaviour
         }
         else if (joystickType == 2)
         {
-            PlayerPrefs.SetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, $"0");
-            PlayerPrefs.SetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, $"150");
+            PlayerPrefs.SetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_X, $"150");
+            PlayerPrefs.SetString(StaticStrings.CONTROLS_DPAD_BUTTONS_POSITION_Y, $"50");
         }
 
         PlayerPrefs.SetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_X, $"-100");
-        PlayerPrefs.SetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, $"250");
+        PlayerPrefs.SetString(StaticStrings.CONTROLS_SHOOT_BUTTON_POSITION_Y, $"100");
 
         PlayerPrefs.Save();
 
