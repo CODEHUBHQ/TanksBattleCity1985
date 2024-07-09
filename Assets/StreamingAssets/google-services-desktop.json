@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "981763077162",
+    "project_id": "tanks-1985-c3d81",
+    "storage_bucket": "tanks-1985-c3d81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981763077162:ios:a49244f132fed37206bf53",
+        "android_client_info": {
+          "package_name": "com.CODEHUB.TanksBattleCity1985"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "AIzaSyCg_YRUek2l46KLP-Sgj2gdd5AdMNi-Osg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
